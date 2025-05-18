@@ -9,9 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "solid-js": "^1.9.5"
+    "@bpmn-io/form-js": "^1.15.2",
+    "@tailwindcss/vite": "^4.1.7",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "solid-js": "^1.9.5",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss": "^4.1.7",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/node": "^22.15.18",
     "vite": "^6.3.5",
     "vite-plugin-solid": "^2.11.6"
   }
