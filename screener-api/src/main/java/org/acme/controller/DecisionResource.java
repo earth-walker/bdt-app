@@ -8,6 +8,7 @@ import org.acme.service.DmnService;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class DecisionResource {
         }
 
         else {
-            throw new InternalServerErrorException();
+            return new HashMap<>();
         }
     }
 }

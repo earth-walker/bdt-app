@@ -38,7 +38,6 @@ public class CamundaDmnService implements DmnService {
 
         DmnDecisionResult results = dmnEngine.evaluateDecision(decision, variables);
 
-        List<Map<String, Object>> result = results.getResultList();
-        return result;
+        return results.getResultList();
     }
 }
