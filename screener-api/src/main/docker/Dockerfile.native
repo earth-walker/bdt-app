@@ -7,7 +7,7 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.native -t quarkus/screener-api .
+# docker build -f src/main/docker/Dockerfile.native -t gcr.io/benefits-decision-toolkit/screener-api .
 #
 # Then run the container using:
 #

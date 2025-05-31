@@ -3,15 +3,19 @@
 #
 # Before building the container image run:
 #
-# ./mvnw package
+# ./mvnw package -DskipTests
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/code-with-quarkus-jvm .
+# podman build -f src/main/docker/Dockerfile.jvm -t us-central1-docker.pkg.dev/benefits-decision-toolkit/benefit-decision-toolkit/screener-api:latest  .
+#
+# push to google artifact registry
+#
+# podman push us-central1-docker.pkg.dev/benefits-decision-toolkit/benefit-decision-toolkit/screener-api:latest
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/code-with-quarkus-jvm
+# docker run -i --rm -p 8080:8080 us-central1-docker.pkg.dev/benefits-decision-toolkit/benefit-decision-toolkit/screener-api:latest
 #
 # If you want to include the debug port into your docker image
 # you will have to expose the debug port (default 5005 being the default) like this :  EXPOSE 8080 5005.

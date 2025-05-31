@@ -16,19 +16,14 @@ import java.io.IOException;
 @ApplicationScoped
 public class FirebaseInitializer {
 
-    @ConfigProperty(name = "FIREBASE_CREDENTIALS_PATH")
-    String firebaseCredentialsPath;
-
     @PostConstruct
     void init() {
 
         if (FirebaseApp.getApps().isEmpty()) {
             try {
-                FileInputStream serviceAccount =
-                        new FileInputStream(firebaseCredentialsPath);
 
                 FirebaseOptions options = new FirebaseOptions.Builder()
-                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .setCredentials(GoogleCredentials.getApplicationDefault())
                         .setStorageBucket("benefits-decision-toolkit.firebasestorage.app")
                         .build();
 

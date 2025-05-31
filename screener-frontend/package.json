@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@bpmn-io/form-js": "^1.15.2",
+    "@solidjs/router": "^0.15.3",
     "@tailwindcss/vite": "^4.1.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "lodash.debounce": "^4.0.8",
     "solid-js": "^1.9.5",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.7",

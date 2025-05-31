@@ -1,20 +1,17 @@
-import { createSignal } from "solid-js";
-import solidLogo from "./assets/solid.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-import FormRenderer from "./FormRenderer";
-import Results from "./Results";
-import Loading from "./Loading";
-import NotFound from "./NotFound";
+import Home from "./Home";
+import Screener from "./Screener";
 
 function App() {
-  return (
-    <>
-      {/* <Loading></Loading> */}
-      {/* <FormRenderer></FormRenderer>
-      <Results></Results> */}
-    </>
-  );
+  const urlParams = new URLSearchParams(window.location.search);
+  const screener = urlParams.get("screener");
+  if (!screener)
+    return (
+      <>
+        <Home></Home>
+      </>
+    );
+  else return <Screener screenerName={screener}></Screener>;
 }
 
 export default App;
