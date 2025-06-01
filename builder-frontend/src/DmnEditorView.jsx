@@ -1,6 +1,7 @@
 import { onMount, onCleanup } from "solid-js";
 import DmnModeler from "dmn-js/lib/Modeler";
 import "dmn-js/dist/assets/diagram-js.css";
+import "dmn-js/dist/assets/dmn-font/css/dmn.css";
 import "dmn-js/dist/assets/dmn-js-boxed-expression-controls.css";
 import "dmn-js/dist/assets/dmn-js-boxed-expression.css";
 import "dmn-js/dist/assets/dmn-js-decision-table-controls.css";
@@ -41,7 +42,7 @@ function DmnEditorView({ schema, submitForm }) {
   });
 
   return (
-    <div className="overflow-auto">
+    <div className="h-full overflow-auto">
       <div className="h-full" ref={(el) => (container = el)} />
     </div>
   );

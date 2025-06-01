@@ -1,4 +1,4 @@
-export default function Header() {
+export default function Header({ returnToProjectsList }) {
   return (
     <header class="bg-gray-200  px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-6">
@@ -6,7 +6,11 @@ export default function Header() {
           Benefits Decision Toolkit
         </span>
       </div>
-      <span href="/projects" class="text-sm text-blue-500 hover:underline">
+      <span
+        onClick={returnToProjectsList}
+        href="/projects"
+        class="font-bold text-sm text-gray-500 hover:underline"
+      >
         ← Back to Projects
       </span>
     </header>
