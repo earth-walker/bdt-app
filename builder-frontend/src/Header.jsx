@@ -8,7 +8,6 @@ export default function Header({ returnToProjectsList }) {
       </div>
       <span
         onClick={returnToProjectsList}
-        href="/projects"
         class="font-bold text-sm text-gray-500 hover:underline"
       >
         ← Back to Projects

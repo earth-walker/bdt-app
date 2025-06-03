@@ -6,12 +6,11 @@ export default function ProjectsList({ setSelectedProject }) {
     { screenerName: "Philly Tax Benefit" },
   ];
 
-  const returnToProjectsList = () => {
-    setSelectedProject(undefined);
-  };
   return (
     <div>
-      <Header returnToProjectsList={returnToProjectsList}></Header>
+      <Header
+        returnToProjectsList={() => setSelectedProject(undefined)}
+      ></Header>
       <div className="flex gap-4 p-4 w-100">
         <For each={data}>
           {(item) =>

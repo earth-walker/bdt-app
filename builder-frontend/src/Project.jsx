@@ -8,7 +8,7 @@ import DmnEditorView from "./DmnEditorView";
 import Preview from "./Preview";
 import Publish from "./Publish";
 
-function Project() {
+function Project({ setSelectedProject }) {
   const [activeTab, setActiveTab] = createSignal("Form Editor");
   let formSchema;
   let DmnModel;
@@ -16,7 +16,9 @@ function Project() {
   const projectName = "Test Project";
   return (
     <div className="h-screen flex flex-col">
-      <Header></Header>
+      <Header
+        returnToProjectsList={() => setSelectedProject(undefined)}
+      ></Header>
       <div class="flex border-b border-gray-200">
         <span className="py-2 px-4 font-bold text-gray-600">
           {" "}
