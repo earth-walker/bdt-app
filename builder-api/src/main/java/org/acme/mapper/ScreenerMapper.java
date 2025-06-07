@@ -3,6 +3,7 @@ package org.acme.mapper;
 import org.acme.constants.FieldNames;
 import org.acme.model.Screener;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ScreenerMapper {
@@ -24,10 +25,28 @@ public class ScreenerMapper {
             screener.setLastPublishDate((String) map.get(FieldNames.LAST_PUBLISHED_DATE));
         }
         if (doesAttributeExistOfType(map, FieldNames.IS_PUBLISHED, Boolean.class)){
-            screener.setPublished((Boolean) map.get(FieldNames.IS_PUBLISHED));
+            screener.setIsPublished((Boolean) map.get(FieldNames.IS_PUBLISHED));
         }
 
         return screener;
+    }
+
+    public static Map<String, Object> fromScreener(Screener screener){
+        Map<String, Object> data = new HashMap<>();
+        if (screener.getScreenerName() != null){
+            data.put(FieldNames.SCREENER_NAME, screener.getScreenerName());
+        }
+        if (screener.getOwnerId() != null){
+            data.put(FieldNames.OWNER_ID, screener.getOwnerId());
+        }
+        if (screener.isPublished() != null){
+            data.put(FieldNames.IS_PUBLISHED, screener.isPublished());
+        }
+        if (screener.getOrganizationName() != null){
+            data.put(FieldNames.ORGANIZATION_NAME, screener.getOrganizationName());
+        }
+
+        return data;
     }
 
     private static boolean doesAttributeExistOfType(Map<String, Object> map, String attributeName, Class<?> expectedType) {

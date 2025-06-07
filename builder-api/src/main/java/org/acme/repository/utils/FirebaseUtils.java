@@ -1,10 +1,7 @@
 package org.acme.repository.utils;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.*;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.FirestoreClient;
@@ -22,12 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class FirebaseUtils {
 
+    private static final Firestore db = FirestoreClient.getFirestore();
+
     public static List<Map<String, Object>> getFirestoreDocsByField(String collection, String field, String value) {
         try {
-            Firestore db = FirestoreClient.getFirestore();
             ApiFuture<QuerySnapshot> query = db.collection(collection)
                     .whereEqualTo(field, value)
                     .get();
@@ -51,7 +50,6 @@ public class FirebaseUtils {
     // If unique field is not unique, this function returns the first of the matched results
     public static Optional<Map<String, Object>> getFirestoreDocByUniqueField(String collection, String field, String value) {
         try {
-            Firestore db = FirestoreClient.getFirestore();
             ApiFuture<QuerySnapshot> query = db.collection(collection)
                     .whereEqualTo(field, value)
                     .limit(1)
@@ -74,7 +72,7 @@ public class FirebaseUtils {
 
     public static Optional<Map<String, Object>> getFirestoreDocById(String collection, String id) {
         try {
-            Firestore db = FirestoreClient.getFirestore();
+
             DocumentSnapshot doc = db.collection(collection)
                     .document(id)
                     .get().get();
@@ -145,4 +143,35 @@ public class FirebaseUtils {
         }
     }
 
+    public static String persistDocument(String collectionName, Map<String, Object> data) throws Exception {
+        try {
+            DocumentReference documentRef = db.collection(collectionName)
+                    .add(data)
+                    .get();
+            return documentRef.getId();
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // preserve interrupt status
+            throw new Exception("Thread interrupted while saving to Firestore", e);
+        } catch (ExecutionException e) {
+            throw new Exception("Failed to write document to Firestore", e);
+        }
+    }
+
+
+    public static void updateDocument(String collectionName, Map<String, Object> data, String docId) throws Exception {
+        try {
+            WriteResult result = db.collection(collectionName)
+                    .document(docId)
+                    .set(data, SetOptions.merge())
+                    .get();
+            Log.info("Document " + docId + " updated at " + result.getUpdateTime());
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // preserve interrupt status
+            throw new Exception("Thread interrupted while saving to Firestore", e);
+        } catch (ExecutionException e) {
+            throw new Exception("Failed to write document to Firestore", e);
+        }
+    }
 }

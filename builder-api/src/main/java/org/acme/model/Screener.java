@@ -7,11 +7,12 @@ public class Screener {
     private String id;
     private Map<String, Object> formSchema;
     private String dmnModel;
-    private boolean isPublished;
-    private String author;
+    private Boolean isPublished;
     private String ownerId;
     private String screenerName;
     private String lastPublishDate;
+    private String slug;
+    private String organizationName;
 
     public Screener(Map<String, Object> model, boolean isPublished){
         this.formSchema = model;
@@ -25,11 +26,11 @@ public class Screener {
         return formSchema;
     }
 
-    public boolean isPublished() {
+    public Boolean isPublished() {
         return isPublished;
     }
 
-    public void setPublished(boolean isPublished){
+    public void setIsPublished(Boolean isPublished){
         this.isPublished = isPublished;
     }
 
@@ -71,5 +72,29 @@ public class Screener {
 
     public String getDmnModel(){
         return this.dmnModel;
+    }
+
+    public String getSlug(){
+        return this.slug;
+    }
+
+    public void setSlug(String slug){
+        this.slug = slug;
+    }
+
+    public String getOrganizationName(){
+        return this.organizationName;
+    }
+
+    public void setOrganizationName(String organizationName){
+        this.organizationName = organizationName;
+    }
+
+    public void setLastPublishedDate(String lastPublishDate){
+        this.lastPublishDate = lastPublishDate;
+    }
+
+    public String getLastPublishDate(){
+        return this.lastPublishDate;
     }
 }

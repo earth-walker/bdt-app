@@ -83,5 +83,18 @@ public class ScreenerRepositoryImpl implements ScreenerRepository {
     private Boolean doesAttributeExistAndOfType(Map<String, Object> map, String key, Class<?> expectedClass){
         return map.containsKey(key) && expectedClass.isInstance(map.get(key));
     }
+
+
+    @Override
+    public String saveNewScreener(Screener screener) throws Exception{
+        Map<String, Object> data = ScreenerMapper.fromScreener(screener);
+        return FirebaseUtils.persistDocument(CollectionNames.SCREENER_COLLECTION, data);
+    }
+
+    @Override
+    public void updateScreener(Screener screener) throws Exception {
+        Map<String, Object> data = ScreenerMapper.fromScreener(screener);
+        FirebaseUtils.updateDocument(CollectionNames.SCREENER_COLLECTION, data, screener.getId());
+    }
 }
 

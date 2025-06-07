@@ -9,4 +9,6 @@ public interface ScreenerRepository {
     public Optional<Screener> getScreenerByName(String name);
 
     public Optional<InputStream> getScreenerDmnModelByName(String name);
+
+
 }
