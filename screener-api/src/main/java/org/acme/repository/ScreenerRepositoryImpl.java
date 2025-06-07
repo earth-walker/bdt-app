@@ -45,7 +45,7 @@ public class ScreenerRepositoryImpl implements ScreenerRepository {
 
         if (formPathOptional.isPresent()){
             String formPath = formPathOptional.get();
-            Map<String, Object> formModel = getFormModelFromStorage(formPath);
+            Map<String, Object> formModel = getFormSchemaFromStorage(formPath);
             screener.setFormModel(formModel);
         }
         return Optional.of(screener);
@@ -78,7 +78,7 @@ public class ScreenerRepositoryImpl implements ScreenerRepository {
     }
 
 
-    private static Map<String, Object> getFormModelFromStorage(String filePath) {
+    private static Map<String, Object> getFormSchemaFromStorage(String filePath) {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             Blob blob = bucket.get(filePath);
