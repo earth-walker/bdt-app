@@ -28,7 +28,7 @@ public class ScreenerResource {
         }
 
         Screener screener = screenerOptional.get();
-        if (screener.getFormSchema().isEmpty() || !screener.isPublished()) {
+        if (screener.getFormSchema() == null || !screener.isPublished()) {
             throw new NotFoundException(notFoundResponseMessage);
         }
 

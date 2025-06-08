@@ -25,19 +25,16 @@ public class FirestoreUtils {
         Firestore db = FirestoreClient.getFirestore();
         try {
 
-            Log.info("here4");
             DocumentSnapshot doc = db.collection(collection)
                     .document(id)
                     .get().get();
 
 
-            Log.info("here5");
             if (!doc.exists()) {
                 return Optional.empty();
             }
 
 
-            Log.info("here6");
             Map<String, Object> data = doc.getData();
             data.put("id", doc.getId());
 

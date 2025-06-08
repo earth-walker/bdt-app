@@ -17,15 +17,12 @@ public class ScreenerRepositoryImpl implements ScreenerRepository {
 
     @Override
     public Optional<Screener> getScreener(String screenerId) {
-        Log.info("here");
         Optional<Map<String, Object>> dataOpt = FirestoreUtils.getFirestoreDocById(CollectionNames.SCREENER_COLLECTION, screenerId);
 
-        Log.info("here2");
         if (dataOpt.isEmpty()){
             return Optional.empty();
         }
 
-        Log.info("here3");
         Map<String, Object> data = dataOpt.get();
         Screener screener = ScreenerMapper.fromMap(data);
 
