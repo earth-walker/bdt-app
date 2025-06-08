@@ -7,11 +7,7 @@ import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.cloud.StorageClient;
 import io.quarkus.logging.Log;
-import org.acme.mapper.ScreenerMapper;
-import org.acme.model.Screener;
-import org.w3c.dom.stylesheets.DocumentStyle;
 
-import javax.swing.text.html.Option;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-public class FirebaseUtils {
+public class FirestoreUtils {
 
     private static final Firestore db = FirestoreClient.getFirestore();
 

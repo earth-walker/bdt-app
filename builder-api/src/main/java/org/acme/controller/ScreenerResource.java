@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.model.Screener;
 import org.acme.repository.ScreenerRepository;
+import org.acme.repository.utils.StorageUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,7 @@ public class ScreenerResource {
 
         //initialize screener data not in form
         newScreener.setIsPublished(false);
+
         newScreener.setOwnerId("TEST");
         try {
             String screenerId = screenerRepository.saveNewScreener(newScreener);
@@ -96,5 +98,50 @@ public class ScreenerResource {
         }
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/save-form-schema")
+    public Response saveFormSchema(@QueryParam("screenerId") String screenerId, String content){
+        if (screenerId == null || screenerId.isBlank()){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Error: Missing required query parameter: screenerId")
+                    .build();
+        }
+        try {
+
+            // perform authorization for screener
+
+            String filePath = StorageUtils.getScreenerWorkingFormSchemaPath(screenerId);
+            StorageUtils.writeStringToStorage(filePath, content, "application/json");
+            Log.info("Saved form schema of screener " + screenerId + " to storage");
+            return Response.ok().build();
+        } catch (Exception e){
+            Log.info(("Failed to save form for screener " + screenerId));
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_XML)
+    @Path("/save-dmn-model")
+    public Response saveDmnModel(@QueryParam("screenerId") String screenerId, String content){
+        if (screenerId == null || screenerId.isBlank()){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Error: Missing required query parameter: screenerId")
+                    .build();
+        }
+        try {
+
+            // perform authorization for screener
+
+            String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
+            StorageUtils.writeStringToStorage(filePath, content, "application/xml");
+            Log.info("Saved DMN model of screener " + screenerId + " to storage");
+            return Response.ok().build();
+        } catch (Exception e){
+            Log.info(("Failed to save DMN model for screener " + screenerId));
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 }
