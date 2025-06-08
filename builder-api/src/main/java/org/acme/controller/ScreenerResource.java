@@ -159,6 +159,7 @@ public class ScreenerResource {
             updateScreener.setId(screenerId);
             updateScreener.setIsPublished(true);
             screenerRepository.updateScreener(updateScreener);
+            StorageUtils.updatePublishedScreenerArtifacts(screenerId);
             Log.info("Updated Screener " + screenerId + " to published.");
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("screenerUrl", getScreenerUrl(screenerId));

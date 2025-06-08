@@ -3,7 +3,9 @@ package org.acme.repository.utils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.CopyWriter;
 import com.google.firebase.cloud.StorageClient;
 import io.quarkus.logging.Log;
 
@@ -13,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class StorageUtils {
 
@@ -54,6 +57,13 @@ public class StorageUtils {
         return "form/working/" + screenerId + ".json";
     }
 
+    public static String getScreenerPublishedDmnModelPath(String screenerId){
+        return "dmn/published/" + screenerId + ".dmn";
+    }
+
+    public static String getScreenerPublishedFormSchemaPath(String screenerId){
+        return "form/published/" + screenerId + ".json";
+    }
     public static Map<String, Object> getFormSchemaFromStorage(String filePath) {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
@@ -73,6 +83,22 @@ public class StorageUtils {
         } catch (Exception e){
             Log.error("Error fetching form model from firebase storage: ", e);
             return null;
+        }
+    }
+
+    public static void updatePublishedScreenerArtifacts(String screenerId) throws Exception {
+        try {
+            Bucket bucket = StorageClient.getInstance().bucket();
+            Blob workingFormBlob = bucket.get(getScreenerWorkingFormSchemaPath(screenerId));
+            Blob workingDmnBlob = bucket.get(getScreenerWorkingDmnModelPath(screenerId));
+            CopyWriter formCopyWriter = workingFormBlob.copyTo(BlobId.of(bucket.getName(), getScreenerPublishedFormSchemaPath(screenerId)));
+            CopyWriter dmnCopyWriter = workingDmnBlob.copyTo(BlobId.of(bucket.getName(), getScreenerPublishedDmnModelPath(screenerId)));
+            formCopyWriter.getResult();
+            dmnCopyWriter.getResult();
+            Log.info("Working artifacts copied to published artifact paths for screener: " + screenerId);
+        } catch (Exception e){
+            Log.error("Error updating published artifacts in cloud storage");
+            throw new Exception("Error updating published artifacts in cloud storage");
         }
     }
 }
