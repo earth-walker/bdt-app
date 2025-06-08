@@ -10,7 +10,7 @@ import org.acme.repository.ScreenerRepository;
 
 import java.util.Optional;
 
-@Path("/api/screener/{screenerName}")
+@Path("/api/screener/{screenerId}")
 public class ScreenerResource {
 
     @Inject
@@ -18,17 +18,17 @@ public class ScreenerResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response get(@PathParam("screenerName") String screenerName) {
+    public Response get(@PathParam("screenerId") String screenerId) {
 
-        Optional<Screener> screenerOptional = screenerRepository.getScreenerByName(screenerName);
+        Optional<Screener> screenerOptional = screenerRepository.getScreener(screenerId);
 
-        String notFoundResponseMessage = String.format("Form %s was not found", screenerName);
+        String notFoundResponseMessage = String.format("Form %s was not found", screenerId);
         if (screenerOptional.isEmpty()){
             throw new NotFoundException(notFoundResponseMessage);
         }
 
         Screener screener = screenerOptional.get();
-        if (screener.getFormModel().isEmpty() || !screener.isPublished()) {
+        if (screener.getFormSchema().isEmpty() || !screener.isPublished()) {
             throw new NotFoundException(notFoundResponseMessage);
         }
 

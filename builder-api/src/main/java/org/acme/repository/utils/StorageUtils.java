@@ -47,18 +47,11 @@ public class StorageUtils {
     }
 
     public static String getScreenerWorkingDmnModelPath(String screenerId){
-        return "dmn/working-" + screenerId + ".dmn";
+        return "dmn/working/" + screenerId + ".dmn";
     }
 
     public static String getScreenerWorkingFormSchemaPath(String screenerId){
-        return "form/working-" + screenerId + ".json";
-    }
-    public static String getScreenerPublishedDmnModelPath(String screenerId){
-        return "dmn/published-" + screenerId + ".dmn";
-    }
-
-    public static String getScreenerPublishedFormSchemaPath(String screenerId){
-        return "dmn/published-" + screenerId + ".dmn";
+        return "form/working/" + screenerId + ".json";
     }
 
     public static Map<String, Object> getFormSchemaFromStorage(String filePath) {
@@ -67,7 +60,7 @@ public class StorageUtils {
             Blob blob = bucket.get(filePath);
 
             if (blob == null || !blob.exists()) {
-                throw new RuntimeException("File not found in Firebase Storage");
+               return null;
             }
 
             byte[] content = blob.getContent();
@@ -79,7 +72,7 @@ public class StorageUtils {
 
         } catch (Exception e){
             Log.error("Error fetching form model from firebase storage: ", e);
-            return new HashMap<>();
+            return null;
         }
     }
 }

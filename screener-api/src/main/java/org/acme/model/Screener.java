@@ -5,33 +5,59 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Screener {
-    private Map<String, Object> formModel;
-    private boolean isPublished;
-    private String author;
+    private String id;
+    private Map<String, Object> formSchema;
+    private Boolean isPublished;
+    private String organizationName;
+    private String screenerName;
 
     public Screener(Map<String, Object> model, boolean isPublished){
-        this.formModel = model;
+        this.formSchema = model;
         this.isPublished = isPublished;
     }
 
     public Screener(){
-        this.formModel = new HashMap<>();
+        this.formSchema = new HashMap<>();
         this.isPublished = false;
     }
 
-    public Map<String, Object> getFormModel() {
-        return formModel;
+    public void setId(String id){
+        this.id = id;
     }
 
-    public boolean isPublished() {
+    public String getId(){
+        return this.id;
+    }
+
+    public String getScreenerName(){
+        return this.screenerName;
+    }
+
+    public void setScreenerName(String screenerName){
+        this.screenerName = screenerName;
+    }
+
+    public Map<String, Object> getFormSchema() {
+        return formSchema;
+    }
+
+    public Boolean isPublished() {
         return isPublished;
     }
 
-    public void setPublished(boolean isPublished){
+    public void setIsPublished(Boolean isPublished){
         this.isPublished = isPublished;
     }
 
-    public void setFormModel(Map<String, Object> formModel) {
-        this.formModel = formModel;
+    public void setFormSchema(Map<String, Object> formSchema) {
+        this.formSchema = formSchema;
+    }
+
+    public String getOrganizationName(){
+        return this.organizationName;
+    }
+
+    public void setOrganizationName(){
+        this.organizationName = organizationName;
     }
 }

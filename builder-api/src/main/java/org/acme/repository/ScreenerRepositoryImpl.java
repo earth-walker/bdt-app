@@ -38,15 +38,13 @@ public class ScreenerRepositoryImpl implements ScreenerRepository {
         Map<String, Object> data = dataOpt.get();
         Screener screener = ScreenerMapper.fromMap(data);
 
-        if (doesAttributeExistAndOfType(data, FieldNames.WORKING_FORM_PATH, String.class)){
-            Map<String, Object>  formSchema = StorageUtils.getFormSchemaFromStorage((String) data.get(FieldNames.WORKING_FORM_PATH));
-            screener.setFormSchema(formSchema);
-        }
+        String formPath = StorageUtils.getScreenerWorkingFormSchemaPath(screenerId);
+        Map<String, Object>  formSchema = StorageUtils.getFormSchemaFromStorage(formPath);
+        screener.setFormSchema(formSchema);
 
-        if (doesAttributeExistAndOfType(data, FieldNames.WORKING_DMN_PATH, String.class)){
-            Optional<String> dmnModel = FirestoreUtils.getFileAsStringFromStorage((String) data.get(FieldNames.WORKING_DMN_PATH));
-            dmnModel.ifPresent(screener::setDmnModel);
-        }
+        String dmnPath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
+        Optional<String> dmnModel = FirestoreUtils.getFileAsStringFromStorage(dmnPath);
+        dmnModel.ifPresent(screener::setDmnModel);
 
         return Optional.of(screener);
     }
