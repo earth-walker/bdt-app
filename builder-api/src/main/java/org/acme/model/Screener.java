@@ -11,7 +11,6 @@ public class Screener {
     private String ownerId;
     private String screenerName;
     private String lastPublishDate;
-    private String slug;
     private String organizationName;
 
     public Screener(Map<String, Object> model, boolean isPublished){
@@ -72,14 +71,6 @@ public class Screener {
 
     public String getDmnModel(){
         return this.dmnModel;
-    }
-
-    public String getSlug(){
-        return this.slug;
-    }
-
-    public void setSlug(String slug){
-        this.slug = slug;
     }
 
     public String getOrganizationName(){

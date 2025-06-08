@@ -16,4 +16,6 @@ public interface ScreenerRepository {
 
     public void updateScreener(Screener screener) throws Exception;
 
+    public void deleteScreener(String screenerId) throws Exception;
+
 }

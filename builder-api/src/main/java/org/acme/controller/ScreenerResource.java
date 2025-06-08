@@ -9,6 +9,7 @@ import org.acme.model.Screener;
 import org.acme.repository.ScreenerRepository;
 import org.acme.repository.utils.StorageUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -144,4 +145,74 @@ public class ScreenerResource {
         }
     }
 
+    @POST
+    @Path("/publish")
+    public Response publishScreener(@QueryParam("screenerId") String screenerId){
+        if (screenerId == null || screenerId.isBlank()){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Error: Missing required query parameter: screenerId")
+                    .build();
+        }
+        try {
+            // Perf authorization to publish screener
+            Screener updateScreener = new Screener();
+            updateScreener.setId(screenerId);
+            updateScreener.setIsPublished(true);
+            screenerRepository.updateScreener(updateScreener);
+            Log.info("Updated Screener " + screenerId + " to published.");
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("screenerUrl", getScreenerUrl(screenerId));
+            return Response.ok().entity(responseData).build();
+
+        } catch (Exception e){
+            Log.error("Error: Error updating screener to published. Screener: " + screenerId);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private static String getScreenerUrl(String screenerId) {
+        return "screener/" + screenerId;
+    }
+
+    @POST
+    @Path("/unpublish")
+    public Response unpublishScreener(@QueryParam("screenerId") String screenerId){
+        if (screenerId == null || screenerId.isBlank()){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Error: Missing required query parameter: screenerId")
+                    .build();
+        }
+        try {
+            // Perf authorization to publish screener
+            Screener updateScreener = new Screener();
+            updateScreener.setId(screenerId);
+            updateScreener.setIsPublished(false);
+            screenerRepository.updateScreener(updateScreener);
+            Log.info("Updated Screener " + screenerId + " to unpublished.");
+            return Response.ok().build();
+
+        } catch (Exception e){
+            Log.error("Error: Error updating screener to unpublished. Screener: " + screenerId);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DELETE
+    @Path("/screener/delete")
+    public Response deleteScreener(@QueryParam("screenerId") String screenerId){
+        if (screenerId == null || screenerId.isBlank()){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Error: Missing required query parameter: screenerId")
+                    .build();
+        }
+        try {
+            //AUTHORIZE delete
+
+            screenerRepository.deleteScreener(screenerId);
+            return Response.ok().build();
+        } catch (Exception e){
+            Log.error("Error: error deleting screener " + screenerId);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

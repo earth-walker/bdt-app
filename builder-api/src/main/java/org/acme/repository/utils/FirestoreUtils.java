@@ -170,4 +170,14 @@ public class FirestoreUtils {
             throw new Exception("Failed to write document to Firestore", e);
         }
     }
+
+    public static void deleteDocument(String collectionName, String docId) throws Exception {
+        try{
+            WriteResult result = db.collection(collectionName).document(docId).delete().get();
+            Log.info("Document " + docId + " deleted at " + result.getUpdateTime());
+        } catch (Exception e){
+            throw new Exception("Failed to delete document from firestore");
+        }
+
+    }
 }

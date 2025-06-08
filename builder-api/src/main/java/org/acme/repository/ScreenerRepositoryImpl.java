@@ -67,5 +67,10 @@ public class ScreenerRepositoryImpl implements ScreenerRepository {
         Map<String, Object> data = ScreenerMapper.fromScreener(screener);
         FirestoreUtils.updateDocument(CollectionNames.SCREENER_COLLECTION, data, screener.getId());
     }
+
+    @Override
+    public void deleteScreener(String screenerId) throws Exception {
+        FirestoreUtils.deleteDocument(CollectionNames.SCREENER_COLLECTION, screenerId);
+    }
 }
 
