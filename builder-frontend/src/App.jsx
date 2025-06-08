@@ -27,7 +27,10 @@ function App() {
   return (
     <>
       {selectedProject() && (
-        <Project setSelectedProject={handleSelectProject}></Project>
+        <Project
+          selectedProject={selectedProject}
+          setSelectedProject={handleSelectProject}
+        ></Project>
       )}
       {!selectedProject() && (
         <ProjectsList setSelectedProject={handleSelectProject}></ProjectsList>

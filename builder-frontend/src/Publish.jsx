@@ -14,7 +14,7 @@ export default function Publish() {
           </div>
         </div>
         <div className="mt-4 flex flex-col gap-2">
-          <button className="w-80 bg-gray-800 font-bold text-gray-200 rounded px-4 py-2 border-2 border-gray-600">
+          <button className="w-80 bg-gray-800 font-bold text-gray-50 rounded px-4 py-2">
             Deploy Screener
           </button>
           <div>Deploy the current working version to your public screener</div>

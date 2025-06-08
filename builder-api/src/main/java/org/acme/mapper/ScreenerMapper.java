@@ -45,7 +45,9 @@ public class ScreenerMapper {
         if (screener.getOrganizationName() != null){
             data.put(FieldNames.ORGANIZATION_NAME, screener.getOrganizationName());
         }
-
+        if (screener.getLastPublishDate() != null){
+            data.put(FieldNames.LAST_PUBLISHED_DATE, screener.getLastPublishDate());
+        }
         return data;
     }
 

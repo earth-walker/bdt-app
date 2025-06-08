@@ -9,6 +9,7 @@ import org.acme.model.Screener;
 import org.acme.repository.ScreenerRepository;
 import org.acme.repository.utils.StorageUtils;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,6 +159,7 @@ public class ScreenerResource {
             Screener updateScreener = new Screener();
             updateScreener.setId(screenerId);
             updateScreener.setIsPublished(true);
+            updateScreener.setLastPublishDate(Instant.now().toString());
             screenerRepository.updateScreener(updateScreener);
             StorageUtils.updatePublishedScreenerArtifacts(screenerId);
             Log.info("Updated Screener " + screenerId + " to published.");

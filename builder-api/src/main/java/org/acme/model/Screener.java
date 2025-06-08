@@ -1,6 +1,4 @@
 package org.acme.model;
-
-
 import java.util.Map;
 
 public class Screener {
@@ -88,4 +86,5 @@ public class Screener {
     public String getLastPublishDate(){
         return this.lastPublishDate;
     }
+
 }
