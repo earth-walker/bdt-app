@@ -27,11 +27,7 @@ public class StorageUtils {
         }
     }
 
-    public static void writeStringToStorage(String filePath, String content){
-        writeStringToStorage(filePath, content, "text/plain");
-    }
-
-    public static Optional<InputStream> getFileFromStorage(String filePath) {
+    public static Optional<InputStream> getFileInputStreamFromStorage(String filePath) {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             Blob blob = bucket.get(filePath);
