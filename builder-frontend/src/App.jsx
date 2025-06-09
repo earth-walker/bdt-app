@@ -1,27 +1,50 @@
 import "./App.css";
 import { createSignal, onMount } from "solid-js";
+import { createNewScreener, fetchProject } from "./api/api";
 import Project from "./Project";
 import ProjectsList from "./ProjectsList";
+import Loading from "./Loading";
 
 function App() {
   const [selectedProject, setSelectedProject] = createSignal();
+  const [isLoading, setIsLoading] = createSignal(false);
   const projectName = "Test Project";
 
   onMount(() => {
     const project = sessionStorage.getItem("selectedProject");
-    console.log(project);
-    if (project) {
+    if (project && project != "undefined") {
       setSelectedProject(JSON.parse(project));
     }
   });
 
-  const handleSelectProject = (project) => {
-    if (!project) {
-      setSelectedProject(undefined);
-      sessionStorage.removeItem("selectedProject");
+  const handleSelectProject = async (screener) => {
+    try {
+      if (!screener) {
+        setSelectedProject(undefined);
+        sessionStorage.removeItem("selectedProject");
+      }
+      setIsLoading(true);
+      const screenerData = await fetchProject(screener.id);
+      setSelectedProject(screenerData);
+      sessionStorage.setItem("selectedProject", JSON.stringify(screenerData));
+      console.log("Screener Data fetched: ");
+      console.log(screenerData);
+      setIsLoading(false);
+    } catch (e) {
+      console.log("Error fetching screener data", e);
+      setIsLoading(false);
     }
-    setSelectedProject(project);
-    sessionStorage.setItem("selectedProject", JSON.stringify(project));
+  };
+
+  const handleCreateNewScreener = async (screenerData) => {
+    try {
+      const newScreener = await createNewScreener(screenerData);
+      setSelectedProject(newScreener);
+      sessionStorage.setItem("selectedProject", JSON.stringify(project));
+    } catch (e) {
+      console.log("Error creating screener with data:");
+      console.log(screenerData);
+    }
   };
 
   return (
@@ -33,8 +56,12 @@ function App() {
         ></Project>
       )}
       {!selectedProject() && (
-        <ProjectsList setSelectedProject={handleSelectProject}></ProjectsList>
+        <ProjectsList
+          handleCreateNewScreener={handleCreateNewScreener}
+          setSelectedProject={handleSelectProject}
+        ></ProjectsList>
       )}
+      {isLoading() && <Loading></Loading>}
     </>
   );
 }
