@@ -1,9 +1,15 @@
 import "./App.css";
 import { createSignal, onMount } from "solid-js";
 import { createNewScreener, fetchProject } from "./api/api";
+import {
+  getSelectedProjectFromStorage,
+  clearSessionStorage,
+  saveScreenerDataToStorage,
+} from "./storageUtils/storageUtils";
 import Project from "./Project";
 import ProjectsList from "./ProjectsList";
 import Loading from "./Loading";
+import { conforms } from "lodash";
 
 function App() {
   const [selectedProject, setSelectedProject] = createSignal();
@@ -11,9 +17,9 @@ function App() {
   const projectName = "Test Project";
 
   onMount(() => {
-    const project = sessionStorage.getItem("selectedProject");
-    if (project && project != "undefined") {
-      setSelectedProject(JSON.parse(project));
+    const project = getSelectedProjectFromStorage();
+    if (project) {
+      setSelectedProject(project);
     }
   });
 
@@ -21,15 +27,14 @@ function App() {
     try {
       if (!screener) {
         setSelectedProject(undefined);
-        sessionStorage.removeItem("selectedProject");
+        clearSessionStorage();
+      } else {
+        setIsLoading(true);
+        const screenerData = await fetchProject(screener.id);
+        saveScreenerDataToStorage(screenerData);
+        setSelectedProject(screenerData);
+        setIsLoading(false);
       }
-      setIsLoading(true);
-      const screenerData = await fetchProject(screener.id);
-      setSelectedProject(screenerData);
-      sessionStorage.setItem("selectedProject", JSON.stringify(screenerData));
-      console.log("Screener Data fetched: ");
-      console.log(screenerData);
-      setIsLoading(false);
     } catch (e) {
       console.log("Error fetching screener data", e);
       setIsLoading(false);
