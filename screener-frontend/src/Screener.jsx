@@ -6,14 +6,15 @@ import { fetchScreenerData, getDecisionResult } from "./api/api";
 import Loading from "./Loading";
 import ErrorPage from "./Error";
 
-export default function Screener({ screenerName }) {
+export default function Screener() {
   const params = useParams();
-  const [data] = createResource(() => fetchScreenerData(screenerName));
+
+  const [data] = createResource(() => fetchScreenerData(params.screenerId));
   const [results, setResults] = createSignal();
 
   const submitForm = async (data) => {
     try {
-      let results = await getDecisionResult(screenerName, data);
+      let results = await getDecisionResult(params.screenerId, data);
       if (!Array.isArray(results)) {
         results = [results];
       }
@@ -33,7 +34,7 @@ export default function Screener({ screenerName }) {
           {data() && (
             <>
               <FormRenderer
-                schema={data().formModel}
+                schema={data().formSchema}
                 submitForm={submitForm}
               ></FormRenderer>
               <div className="pt-4">

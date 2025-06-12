@@ -2,6 +2,7 @@ import { onMount } from "solid-js";
 import { Form } from "@bpmn-io/form-js-viewer";
 import debounce from "lodash.debounce";
 import "@bpmn-io/form-js/dist/assets/form-js.css";
+import { useParams } from "@solidjs/router";
 
 function FormRenderer({ schema, submitForm }) {
   let container;

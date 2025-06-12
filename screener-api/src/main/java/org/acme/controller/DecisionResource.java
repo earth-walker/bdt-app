@@ -9,6 +9,7 @@ import org.acme.repository.utils.StorageUtils;
 import org.acme.service.DmnService;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -48,11 +49,11 @@ public class DecisionResource {
         List<Map<String, Object>> result = dmnService.evaluateDecision(dmnFileInputStream, inputData);
 
         if (!result.isEmpty()){
-            return Response.ok().entity(result).build();
+            return Response.ok(Collections.emptyList()).entity(result).build();
         }
 
         else {
-            return Response.ok().build();
+            return Response.ok(Collections.emptyList()).build();
         }
     }
 }

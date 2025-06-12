@@ -1,8 +1,8 @@
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-export const fetchScreenerData = async (screenerName) => {
+export const fetchScreenerData = async (screenerId) => {
   try {
-    const response = await fetch(`${BASE_URL}screener/${screenerName}`);
+    const response = await fetch(`${BASE_URL}screener/${screenerId}`);
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
@@ -14,21 +14,22 @@ export const fetchScreenerData = async (screenerName) => {
   }
 };
 
-export const getDecisionResult = async (screenerName, data) => {
+export const getDecisionResult = async (screenerId, data) => {
   try {
-    data.screenerName = screenerName;
-    const response = await fetch(`${BASE_URL}decision`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      `${BASE_URL}decision?screenerId=${screenerId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to submit form");
     }
-
     const result = await response.json();
     return result;
   } catch (err) {
