@@ -4,6 +4,7 @@ import {
   saveScreenerDataToStorage,
 } from "./storageUtils/storageUtils";
 import { publishScreener, fetchProject } from "./api/api";
+const screenerBaseUrl = import.meta.env.VITE_SCREENER_BASE_URL;
 export default function Publish() {
   const [isLoading, setIsLoading] = createSignal(false);
   const [screenerName, setScreenerName] = createSignal();
@@ -22,7 +23,7 @@ export default function Publish() {
     setScreenerName(screenerName);
     setIsPublished(published);
     setLastPublishDate(lastPublishDate);
-    setScreenerUrl("https://benfits-decision-toolkit/screener/" + id);
+    setScreenerUrl(screenerBaseUrl + "screener/" + id);
     screenerId = id;
   };
 
@@ -58,7 +59,9 @@ export default function Publish() {
           <div className=" flex gap-4">
             <div className="text-sm font-bold">Screener URL:</div>
             {isPublished() ? (
-              <a>{screenerUrl()}</a>
+              <a href={screenerUrl()} target="_blank" rel="noopener noreferrer">
+                {screenerUrl()}
+              </a>
             ) : (
               <a>Deploy screener to create public url.</a>
             )}
