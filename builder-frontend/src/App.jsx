@@ -13,7 +13,6 @@ import { conforms } from "lodash";
 
 function App() {
   const [selectedProject, setSelectedProject] = createSignal();
-  const [selectedTab, setSelectedTab] = createSignal();
   const [isLoading, setIsLoading] = createSignal(false);
   const projectName = "Test Project";
 
