@@ -3,7 +3,7 @@ import { For } from "solid-js";
 export default function Results({ results }) {
   return (
     <div class="my-4 mx-8 p-4 border border-gray-300 rounded shadow-sm">
-      <h2 class="text-gray-800 text-md font-bold">Results</h2>
+      <div class="text-lg text-gray-800 text-md font-bold">Results</div>
       <div class="my-2">
         {results() && (
           <For each={results()}>

@@ -1,9 +1,11 @@
-import { onMount, onCleanup } from "solid-js";
+import { onMount, onCleanup, createSignal } from "solid-js";
 import { debounce } from "lodash";
 import {
   getDmnModelFromStorage,
   saveDmnModelToStorageDebounced,
+  getSelectedProjectFromStorage,
 } from "./storageUtils/storageUtils";
+import { saveDmnModel } from "./api/api";
 import DmnModeler from "dmn-js/lib/Modeler";
 import "dmn-js/dist/assets/diagram-js.css";
 import "dmn-js/dist/assets/dmn-font/css/dmn.css";
@@ -14,16 +16,19 @@ import "dmn-js/dist/assets/dmn-js-decision-table.css";
 import "dmn-js/dist/assets/dmn-js-drd.css";
 import "dmn-js/dist/assets/dmn-js-literal-expression.css";
 import "dmn-js/dist/assets/dmn-js-shared.css";
-import { act } from "react";
-function DmnEditorView({ setIsDmnDirty }) {
-  let container;
 
+function DmnEditorView() {
+  const [isUnsaved, setIsUnsaved] = createSignal(false);
+  const [isSaving, setIsSaving] = createSignal(false);
+  let container;
+  let timeoutId;
+  let modeler;
   onMount(() => {
     initializeDmnModeler();
   });
 
   const initializeDmnModeler = async () => {
-    const modeler = new DmnModeler({ container });
+    modeler = new DmnModeler({ container });
 
     const defaultXML = `<?xml version="1.0" encoding="UTF-8"?>
       <definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
@@ -83,13 +88,45 @@ function DmnEditorView({ setIsDmnDirty }) {
     }
     onCleanup(() => {
       modeler.destroy();
+      clearTimeout(timeoutId);
     });
   };
 
+  const handleSave = async () => {
+    const selectedProject = getSelectedProjectFromStorage();
+    const screenerId = selectedProject.id;
+    const { xml } = await modeler.saveXML({ format: true });
+    setIsUnsaved(false);
+    setIsSaving(true);
+    saveDmnModel(screenerId, xml);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => setIsSaving(false), 500);
+  };
+
   return (
-    <div className="h-full overflow-auto">
-      <div className="h-full" ref={(el) => (container = el)} />
-    </div>
+    <>
+      <div className="h-full overflow-auto">
+        <div className="h-full" ref={(el) => (container = el)} />
+      </div>
+      <div className="fixed z-50 top-16 right-4 flex ml-auto mr-8 gap-2 justify-center">
+        {isUnsaved() && (
+          <span className="underline text-sm flex items-center text-gray-500">
+            unsaved changes
+          </span>
+        )}
+        {isSaving() && (
+          <span className="text-sm flex items-center text-gray-500">
+            saving ...
+          </span>
+        )}
+        <button
+          onClick={handleSave}
+          className="px-2 text-emerald-500 h-8 border-2 rounded hover:bg-emerald-100"
+        >
+          Save
+        </button>
+      </div>
+    </>
   );
 }
 

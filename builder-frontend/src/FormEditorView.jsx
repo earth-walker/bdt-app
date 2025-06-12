@@ -1,5 +1,7 @@
-import { onMount, onCleanup } from "solid-js";
+import { onMount, onCleanup, createSignal } from "solid-js";
 import { FormEditor } from "@bpmn-io/form-js-editor";
+import { getSelectedProjectFromStorage } from "./storageUtils/storageUtils";
+import { saveFormSchema } from "./api/api";
 import {
   saveFormSchemaToStorageDebounced,
   getFormSchemaFromStorage,
@@ -7,8 +9,12 @@ import {
 import "@bpmn-io/form-js/dist/assets/form-js.css";
 import "@bpmn-io/form-js-editor/dist/assets/form-js-editor.css";
 
-function FormEditorView({ setIsFormDirty }) {
+function FormEditorView() {
+  const [isUnsaved, setIsUnsaved] = createSignal(false);
+  const [isSaving, setIsSaving] = createSignal(false);
+  let timeoutId;
   let container;
+  let formEditor;
   let emptySchema = {
     components: [],
     exporter: { name: "form-js (https://demo.bpmn.io)", version: "1.15.0" },
@@ -16,8 +22,9 @@ function FormEditorView({ setIsFormDirty }) {
     schemaVersion: 18,
     type: "default",
   };
+
   onMount(() => {
-    let formEditor = new FormEditor({ container });
+    formEditor = new FormEditor({ container });
 
     let formSchema = getFormSchemaFromStorage();
 
@@ -32,9 +39,7 @@ function FormEditorView({ setIsFormDirty }) {
     }
 
     formEditor.on("changed", (e) => {
-      console.log(e);
-      console.log("Form dirty");
-      setIsFormDirty(true);
+      setIsUnsaved(true);
       saveFormSchemaToStorageDebounced(e.schema);
     });
 
@@ -42,14 +47,47 @@ function FormEditorView({ setIsFormDirty }) {
       if (formEditor) {
         formEditor.destroy();
         formEditor = null;
+        clearTimeout(timeoutId);
       }
     });
   });
 
+  const handleSave = async () => {
+    const selectedProject = getSelectedProjectFromStorage();
+    const screenerId = selectedProject.id;
+    const formSchema = await formEditor.getSchema();
+    setIsUnsaved(false);
+    setIsSaving(true);
+    saveFormSchema(screenerId, formSchema);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => setIsSaving(false), 500);
+  };
+
   return (
-    <div className="overflow-auto">
-      <div className="h-full" ref={(el) => (container = el)} />
-    </div>
+    <>
+      <div className="overflow-auto">
+        <div className="h-full" ref={(el) => (container = el)} />
+      </div>
+
+      <div className="fixed z-50 top-16 right-4 flex ml-auto mr-8 gap-2 justify-center">
+        {isUnsaved() && (
+          <span className="underline text-sm flex items-center text-gray-500">
+            unsaved changes
+          </span>
+        )}
+        {isSaving() && (
+          <span className="text-sm flex items-center text-gray-500">
+            saving ...
+          </span>
+        )}
+        <button
+          onClick={handleSave}
+          className="px-2 text-emerald-500 h-8 border-2 rounded hover:bg-emerald-100"
+        >
+          Save
+        </button>
+      </div>
+    </>
   );
 }
 

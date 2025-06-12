@@ -1,10 +1,13 @@
 package org.acme.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.acme.dto.SaveDmnRequest;
+import org.acme.dto.SaveSchemaRequest;
 import org.acme.model.Screener;
 import org.acme.repository.ScreenerRepository;
 import org.acme.repository.utils.StorageUtils;
@@ -103,10 +106,17 @@ public class ScreenerResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/save-form-schema")
-    public Response saveFormSchema(@QueryParam("screenerId") String screenerId, String content){
+    public Response saveFormSchema(SaveSchemaRequest saveSchemaRequest){
+        String screenerId = saveSchemaRequest.screenerId;
+        JsonNode schema = saveSchemaRequest.schema;
         if (screenerId == null || screenerId.isBlank()){
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Error: Missing required query parameter: screenerId")
+                    .entity("Error: Missing required required data in request body: screenerId")
+                    .build();
+        }
+        if (schema == null){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Error: Missing required required data in request body: screenerId")
                     .build();
         }
         try {
@@ -114,7 +124,7 @@ public class ScreenerResource {
             // perform authorization for screener
 
             String filePath = StorageUtils.getScreenerWorkingFormSchemaPath(screenerId);
-            StorageUtils.writeStringToStorage(filePath, content, "application/json");
+            StorageUtils.writeJsonToStorage(filePath, schema);
             Log.info("Saved form schema of screener " + screenerId + " to storage");
             return Response.ok().build();
         } catch (Exception e){
@@ -124,12 +134,19 @@ public class ScreenerResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_XML)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Path("/save-dmn-model")
-    public Response saveDmnModel(@QueryParam("screenerId") String screenerId, String content){
+    public Response saveDmnModel(SaveDmnRequest saveDmnRequest){
+        String screenerId = saveDmnRequest.screenerId;
+        String dmnModel = saveDmnRequest.dmnModel;
         if (screenerId == null || screenerId.isBlank()){
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Error: Missing required query parameter: screenerId")
+                    .entity("Error: Missing required data: screenerId")
+                    .build();
+        }
+        if (dmnModel == null){
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Error: Missing required data: DMN Model")
                     .build();
         }
         try {
@@ -137,7 +154,7 @@ public class ScreenerResource {
             // perform authorization for screener
 
             String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
-            StorageUtils.writeStringToStorage(filePath, content, "application/xml");
+            StorageUtils.writeStringToStorage(filePath, dmnModel, "application/xml");
             Log.info("Saved DMN model of screener " + screenerId + " to storage");
             return Response.ok().build();
         } catch (Exception e){

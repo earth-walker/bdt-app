@@ -1,4 +1,8 @@
-import { createSignal } from "solid-js";
+import { createSignal, onMount } from "solid-js";
+import {
+  getTabFromStorage,
+  saveTabToStorage,
+} from "./storageUtils/storageUtils";
 import "./App.css";
 import Header from "./Header";
 import FormEditorView from "./FormEditorView";
@@ -8,12 +12,21 @@ import Publish from "./Publish";
 
 function Project({ selectedProject, setSelectedProject }) {
   const [activeTab, setActiveTab] = createSignal("Form Editor");
-  const [isFormDirty, setIsFormDirty] = createSignal(false);
+  const [setIsFormDirty] = createSignal(false);
   const [isDmnDirty, setIsDmnDirty] = createSignal(false);
-  let isFormSchemaDirty;
-  let isDmnModelDirty;
 
-  const projectName = "Test Project";
+  onMount(() => {
+    const tab = getTabFromStorage();
+    if (tab) {
+      setActiveTab(tab);
+    }
+  });
+
+  const handleSelectTab = (tab) => {
+    saveTabToStorage(tab);
+    setActiveTab(tab);
+  };
+
   return (
     <div className="h-screen flex flex-col">
       <Header
@@ -31,29 +44,15 @@ function Project({ selectedProject, setSelectedProject }) {
                 ? "border-b border-gray-700 text-gray-700 hover:bg-gray-200"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-200"
             }`}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => handleSelectTab(tab)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
         ))}
-        <div className="flex ml-auto mr-8 gap-2 justify-center">
-          {(isFormDirty() || isDmnDirty()) && (
-            <span className="text-sm flex items-center text-gray-500">
-              unsaved changes
-            </span>
-          )}
-          <button className="m-1 px-2 text-emerald-500 border-2 rounded hover:bg-emerald-100">
-            Save
-          </button>
-        </div>
       </div>
 
-      {activeTab() == "Form Editor" && (
-        <FormEditorView setIsFormDirty={setIsFormDirty}></FormEditorView>
-      )}
-      {activeTab() == "DMN Editor" && (
-        <DmnEditorView setIsDmnDirty={setIsDmnDirty}></DmnEditorView>
-      )}
+      {activeTab() == "Form Editor" && <FormEditorView></FormEditorView>}
+      {activeTab() == "DMN Editor" && <DmnEditorView></DmnEditorView>}
       {activeTab() == "Preview" && <Preview></Preview>}
       {activeTab() == "Publish" && <Publish></Publish>}
     </div>

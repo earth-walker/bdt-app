@@ -1,6 +1,7 @@
 package org.acme.repository.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -23,6 +24,18 @@ public class StorageUtils {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             InputStream inputSteam = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+            Blob blob = bucket.create(filePath, inputSteam, contentType);
+            Log.info("Uploaded to GCS: " + blob.getName());
+        } catch (Exception e){
+            Log.error("Error writing file to GCS: " + e.getMessage());
+        }
+    }
+
+    public static void writeJsonToStorage(String filePath, JsonNode json){
+        try {
+            Bucket bucket = StorageClient.getInstance().bucket();
+            ObjectMapper mapper = new ObjectMapper();
+            InputStream inputSteam = new ByteArrayInputStream(mapper.writeValueAsBytes(json));
             Blob blob = bucket.create(filePath, inputSteam, "application/json");
             Log.info("Uploaded to GCS: " + blob.getName());
         } catch (Exception e){
@@ -74,6 +87,8 @@ public class StorageUtils {
             }
 
             byte[] content = blob.getContent();
+
+
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> formSchema = mapper.readValue(new ByteArrayInputStream(content), new TypeReference<Map<String, Object>>() {
             });

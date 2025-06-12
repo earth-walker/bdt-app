@@ -4,6 +4,7 @@ export const StorageKeys = {
   SELECTED_PROJECT: "selectedProject",
   FORM_SCHEMA: "formSchema",
   DMN_MODEL: "dmnModel",
+  TAB: "tab",
 };
 
 export const getFormSchemaFromStorage = () => {
@@ -33,6 +34,17 @@ export const getSelectedProjectFromStorage = () => {
   if (project) {
     return JSON.parse(project);
   } else return undefined;
+};
+
+export const getTabFromStorage = () => {
+  const tab = sessionStorage.getItem(StorageKeys.TAB);
+  if (tab) {
+    return tab;
+  } else return "Form Editor";
+};
+
+export const saveTabToStorage = (tab) => {
+  sessionStorage.setItem(StorageKeys.TAB, tab);
 };
 
 export const saveFormSchemaToStorageDebounced = debounce((schema) => {
@@ -68,4 +80,5 @@ export const clearSessionStorage = () => {
   sessionStorage.removeItem(StorageKeys.SELECTED_PROJECT);
   sessionStorage.removeItem(StorageKeys.FORM_SCHEMA);
   sessionStorage.removeItem(StorageKeys.DMN_MODEL);
+  sessionStorage.removeItem(StorageKeys.TAB);
 };

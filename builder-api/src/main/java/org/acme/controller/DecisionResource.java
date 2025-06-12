@@ -22,6 +22,7 @@ public class DecisionResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response post(@QueryParam("screenerId") String screenerId, Map<String, Object> inputData) {
         if (screenerId == null || screenerId.isBlank()){
             return Response.status(Response.Status.BAD_REQUEST)
@@ -50,7 +51,7 @@ public class DecisionResource {
         }
 
         else {
-            return Response.ok().build();
+            return Response.ok().entity(Collections.emptyList()).build();
         }
     }
 }
