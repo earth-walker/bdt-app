@@ -1,40 +1,87 @@
-import { getSelectedProjectFromStorage } from "./storageUtils/storageUtils";
-
+import { createSignal, onMount } from "solid-js";
+import {
+  getSelectedProjectFromStorage,
+  saveScreenerDataToStorage,
+} from "./storageUtils/storageUtils";
+import { publishScreener, fetchProject } from "./api/api";
 export default function Publish() {
-  const { id, screenerName, isPublished, lastPublishDate } =
-    getSelectedProjectFromStorage();
+  const [isLoading, setIsLoading] = createSignal(false);
+  const [screenerName, setScreenerName] = createSignal();
+  const [isPublished, setIsPublished] = createSignal();
+  const [lastPublishDate, setLastPublishDate] = createSignal();
+  const [screenerUrl, setScreenerUrl] = createSignal();
+  let screenerId;
 
-  const handlePublish = async () => {};
+  onMount(() => {
+    setScreenerState();
+  });
+
+  const setScreenerState = () => {
+    const { id, screenerName, published, lastPublishDate } =
+      getSelectedProjectFromStorage();
+    setScreenerName(screenerName);
+    setIsPublished(published);
+    setLastPublishDate(lastPublishDate);
+    setScreenerUrl("https://benfits-decision-toolkit/screener/" + id);
+    screenerId = id;
+  };
+
+  const handlePublish = async () => {
+    console.log("handle publish");
+    try {
+      setIsLoading(true);
+      await publishScreener(screenerId);
+      const screenerData = await fetchProject(screenerId);
+      saveScreenerDataToStorage(screenerData);
+      setScreenerState();
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
+    }
+  };
+
+  const formattedDate = (isoString) => {
+    const trimmed = isoString.replace(/\.\d{3,}Z$/, "Z");
+    const date = new Date(trimmed);
+
+    return new Intl.DateTimeFormat("en-US", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(date);
+  };
+
   return (
     <div className="py-8 flex justify-center">
       <div className="px-8 py-4 w-xl border-1 shadow-sm border-gray-200">
-        <div className="text-xl">{screenerName}</div>
+        <div className="text-xl">{screenerName()}</div>
         <div className="mt-4 flex flex-col gap-2">
           <div className=" flex gap-4">
-            <div className="font-bold">Screener URL:</div>
-            {isPublished ? (
-              <a>test-screener.app</a>
+            <div className="text-sm font-bold">Screener URL:</div>
+            {isPublished() ? (
+              <a>{screenerUrl()}</a>
             ) : (
               <a>Deploy screener to create public url.</a>
             )}
           </div>
           <div className="flex gap-4">
-            <div className="font-bold">Last Published Date:</div>
-            {lastPublishDate ? (
-              <div>{lastPublishDate}</div>
+            <div className="text-sm font-bold">Last Published Date:</div>
+            {lastPublishDate() ? (
+              <div>{formattedDate(lastPublishDate())}</div>
             ) : (
               <div>Not yet published</div>
             )}
           </div>
         </div>
         <div className="mt-4 flex flex-col gap-2">
-          <button className="w-80 bg-gray-800 font-bold text-gray-50 rounded px-4 py-2 hover:bg-gray-700">
+          <button
+            onClick={handlePublish}
+            className="w-80 bg-gray-800 font-bold text-gray-50 rounded px-4 py-2 hover:bg-gray-700 disabled:opacity-50"
+            disabled={isLoading()}
+          >
             Deploy Screener
           </button>
-          {lastPublishDate ? (
-            <div>
-              Deploy the current working version to your public screener
-            </div>
+          {lastPublishDate() ? (
+            <div>Deploy current working version to your public screener</div>
           ) : (
             <div>Click to make your screener availble through a public URL</div>
           )}

@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.acme.dto.PublishScreenerRequest;
 import org.acme.dto.SaveDmnRequest;
 import org.acme.dto.SaveSchemaRequest;
 import org.acme.model.Screener;
@@ -164,8 +165,10 @@ public class ScreenerResource {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Path("/publish")
-    public Response publishScreener(@QueryParam("screenerId") String screenerId){
+    public Response publishScreener(PublishScreenerRequest publishScreenerRequest){
+        String screenerId = publishScreenerRequest.screenerId;
         if (screenerId == null || screenerId.isBlank()){
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Error: Missing required query parameter: screenerId")

@@ -22,6 +22,7 @@ export const fetchProjects = async () => {
 };
 
 export const fetchProject = async (screenerId) => {
+  console.log("fetch project");
   const url = apiUrl + "/screener/" + screenerId;
   try {
     const response = await fetch(url, {
@@ -35,6 +36,8 @@ export const fetchProject = async (screenerId) => {
       throw new Error(`Fetch failed with status: ${response.status}`);
     }
     const data = await response.json();
+    console.log("data");
+    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching screener:", error);
@@ -134,6 +137,32 @@ export const submitForm = async (screenerId, formData) => {
     if (!response.ok) {
       throw new Error(`Submit failed with status: ${response.status}`);
     }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    throw error; // rethrow so you can handle it in your component if needed
+  }
+};
+
+export const publishScreener = async (screenerId) => {
+  console.log("publish screener");
+  const url = apiUrl + "/publish";
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ screenerId: screenerId }),
+    });
+
+    console.log(response);
+    if (!response.ok) {
+      throw new Error(`Submit failed with status: ${response.status}`);
+    }
+
     const data = await response.json();
     return data;
   } catch (error) {
