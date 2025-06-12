@@ -1,4 +1,5 @@
 import { createSignal, createResource, ErrorBoundary } from "solid-js";
+import { useParams } from "@solidjs/router";
 import FormRenderer from "./FormRenderer";
 import Results from "./Results";
 import { fetchScreenerData, getDecisionResult } from "./api/api";
@@ -6,6 +7,7 @@ import Loading from "./Loading";
 import ErrorPage from "./Error";
 
 export default function Screener({ screenerName }) {
+  const params = useParams();
   const [data] = createResource(() => fetchScreenerData(screenerName));
   const [results, setResults] = createSignal();
 
