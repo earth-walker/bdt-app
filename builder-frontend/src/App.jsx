@@ -10,6 +10,7 @@ import Project from "./Project";
 import ProjectsList from "./ProjectsList";
 import Loading from "./Loading";
 import { conforms } from "lodash";
+import AuthForm from "./AuthForm";
 
 function App() {
   const [selectedProject, setSelectedProject] = createSignal();
@@ -54,7 +55,8 @@ function App() {
 
   return (
     <>
-      {selectedProject() && (
+      <AuthForm></AuthForm>
+      {/* {selectedProject() && (
         <Project
           selectedProject={selectedProject}
           setSelectedProject={handleSelectProject}
@@ -66,7 +68,7 @@ function App() {
           setSelectedProject={handleSelectProject}
         ></ProjectsList>
       )}
-      {isLoading() && <Loading></Loading>}
+      {isLoading() && <Loading></Loading>} */}
     </>
   );
 }
