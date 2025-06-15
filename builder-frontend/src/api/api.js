@@ -36,8 +36,6 @@ export const fetchProject = async (screenerId) => {
       throw new Error(`Fetch failed with status: ${response.status}`);
     }
     const data = await response.json();
-    console.log("data");
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching screener:", error);
@@ -46,8 +44,6 @@ export const fetchProject = async (screenerId) => {
 };
 
 export const createNewScreener = async (screenerData) => {
-  console.log("creating new screener");
-  console.log(screenerData);
   const url = apiUrl + "/screener";
   try {
     const response = await fetch(url, {
@@ -71,8 +67,6 @@ export const createNewScreener = async (screenerData) => {
 };
 
 export const saveFormSchema = async (screenerId, schema) => {
-  console.log("saving form schema");
-  console.log(screenerId);
   const requestData = {};
   requestData.screenerId = screenerId;
   requestData.schema = schema;
@@ -97,8 +91,6 @@ export const saveFormSchema = async (screenerId, schema) => {
 };
 
 export const saveDmnModel = async (screenerId, dmnModel) => {
-  console.log("saving dmn model");
-  console.log(screenerId);
   const requestData = {};
   requestData.screenerId = screenerId;
   requestData.dmnModel = dmnModel;
@@ -146,7 +138,6 @@ export const submitForm = async (screenerId, formData) => {
 };
 
 export const publishScreener = async (screenerId) => {
-  console.log("publish screener");
   const url = apiUrl + "/publish";
   try {
     const response = await fetch(url, {
@@ -158,7 +149,6 @@ export const publishScreener = async (screenerId) => {
       body: JSON.stringify({ screenerId: screenerId }),
     });
 
-    console.log(response);
     if (!response.ok) {
       throw new Error(`Submit failed with status: ${response.status}`);
     }

@@ -1,11 +1,11 @@
 import { onMount, onCleanup, createSignal } from "solid-js";
 import { FormEditor } from "@bpmn-io/form-js-editor";
-import { getSelectedProjectFromStorage } from "../storageUtils/storageUtils";
-import { saveFormSchema } from "../api/api";
+import { getSelectedProjectFromStorage } from "../../storageUtils/storageUtils";
+import { saveFormSchema } from "../../api/api";
 import {
   saveFormSchemaToStorageDebounced,
   getFormSchemaFromStorage,
-} from "../storageUtils/storageUtils";
+} from "../../storageUtils/storageUtils";
 import "@bpmn-io/form-js/dist/assets/form-js.css";
 import "@bpmn-io/form-js-editor/dist/assets/form-js-editor.css";
 

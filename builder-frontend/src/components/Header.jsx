@@ -1,4 +1,12 @@
+import { useAuth } from "../context/AuthContext";
+import { clearSessionStorage } from "../storageUtils/storageUtils";
+
 export default function Header({ returnToProjectsList }) {
+  const { logout } = useAuth();
+  const handleLogout = () => {
+    clearSessionStorage();
+    logout();
+  };
   return (
     <header class="bg-gray-200  px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-6">
@@ -6,12 +14,20 @@ export default function Header({ returnToProjectsList }) {
           Benefits Decision Toolkit
         </span>
       </div>
-      <span
-        onClick={returnToProjectsList}
-        class="font-bold text-sm text-gray-500 hover:underline"
-      >
-        ← Back to Projects
-      </span>
+      <div className="flex gap-4">
+        <span
+          onClick={returnToProjectsList}
+          class="font-bold text-sm text-gray-500 hover:underline"
+        >
+          ← Back to Projects
+        </span>
+        <span
+          onClick={handleLogout}
+          className="font-bold text-sm text-gray-500 hover:underline"
+        >
+          Logout
+        </span>
+      </div>
     </header>
   );
 }

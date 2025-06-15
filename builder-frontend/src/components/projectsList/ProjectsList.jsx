@@ -1,6 +1,6 @@
 import { For, createResource, createSignal } from "solid-js";
-import Header from "./Header";
-import { fetchProjects } from "../api/api";
+import Header from "../Header";
+import { fetchProjects } from "../../api/api";
 import NewScreenerForm from "./NewScreenerForm";
 export default function ProjectsList({
   setSelectedProject,

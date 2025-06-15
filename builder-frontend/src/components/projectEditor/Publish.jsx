@@ -2,8 +2,8 @@ import { createSignal, onMount } from "solid-js";
 import {
   getSelectedProjectFromStorage,
   saveScreenerDataToStorage,
-} from "../storageUtils/storageUtils";
-import { publishScreener, fetchProject } from "../api/api";
+} from "../../storageUtils/storageUtils";
+import { publishScreener, fetchProject } from "../../api/api";
 const screenerBaseUrl = import.meta.env.VITE_SCREENER_BASE_URL;
 export default function Publish() {
   const [isLoading, setIsLoading] = createSignal(false);

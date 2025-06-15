@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import GoogleLoginButton from "../GoogleLoginButton";
+import GoogleLoginButton from "./GoogleLoginButton";
 import { useAuth } from "../../context/AuthContext";
 import Login from "./Login";
 import Signup from "./Signup";
