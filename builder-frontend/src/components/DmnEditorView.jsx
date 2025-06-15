@@ -4,8 +4,8 @@ import {
   getDmnModelFromStorage,
   saveDmnModelToStorageDebounced,
   getSelectedProjectFromStorage,
-} from "./storageUtils/storageUtils";
-import { saveDmnModel } from "./api/api";
+} from "../storageUtils/storageUtils";
+import { saveDmnModel } from "../api/api";
 import DmnModeler from "dmn-js/lib/Modeler";
 import "dmn-js/dist/assets/diagram-js.css";
 import "dmn-js/dist/assets/dmn-font/css/dmn.css";

@@ -6,11 +6,12 @@ import {
   clearSessionStorage,
   saveScreenerDataToStorage,
 } from "./storageUtils/storageUtils";
-import Project from "./Project";
-import ProjectsList from "./ProjectsList";
-import Loading from "./Loading";
+import Project from "./components/Project";
+import ProjectsList from "./components/ProjectsList";
+import Loading from "./components/Loading";
 import { conforms } from "lodash";
-import AuthForm from "./AuthForm";
+import AuthForm from "./components/auth/AuthForm";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   const [selectedProject, setSelectedProject] = createSignal();
@@ -55,8 +56,9 @@ function App() {
 
   return (
     <>
-      <AuthForm></AuthForm>
-      {/* {selectedProject() && (
+      <AuthProvider>
+        <AuthForm></AuthForm>
+        {/* {selectedProject() && (
         <Project
           selectedProject={selectedProject}
           setSelectedProject={handleSelectProject}
@@ -69,6 +71,7 @@ function App() {
         ></ProjectsList>
       )}
       {isLoading() && <Loading></Loading>} */}
+      </AuthProvider>
     </>
   );
 }

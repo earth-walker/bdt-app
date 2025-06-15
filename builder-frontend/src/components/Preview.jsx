@@ -2,8 +2,8 @@ import { createSignal, createResource, ErrorBoundary } from "solid-js";
 import {
   getFormSchemaFromStorage,
   getSelectedProjectFromStorage,
-} from "./storageUtils/storageUtils";
-import { submitForm } from "./api/api";
+} from "../storageUtils/storageUtils";
+import { submitForm } from "../api/api";
 import FormRenderer from "./FormRenderer";
 import Results from "./Results";
 

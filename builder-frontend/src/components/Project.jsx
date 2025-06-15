@@ -2,8 +2,8 @@ import { createSignal, onMount } from "solid-js";
 import {
   getTabFromStorage,
   saveTabToStorage,
-} from "./storageUtils/storageUtils";
-import "./App.css";
+} from "../storageUtils/storageUtils";
+import "../App.css";
 import Header from "./Header";
 import FormEditorView from "./FormEditorView";
 import DmnEditorView from "./DmnEditorView";
