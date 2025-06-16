@@ -1,9 +1,30 @@
+import { getAuth } from "firebase/auth";
 const apiUrl = import.meta.env.VITE_API_URL;
+
+async function authFetch(input, init = {}) {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  // If no user is logged in, you can handle it accordingly
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  const token = await user.getIdToken();
+
+  const headers = new Headers(init.headers || {});
+  headers.set("Authorization", `Bearer ${token}`);
+
+  return fetch(input, {
+    ...init,
+    headers,
+  });
+}
 
 export const fetchProjects = async () => {
   const url = apiUrl + "/screeners";
   try {
-    const response = await fetch(url, {
+    const response = await authFetch(url, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -25,7 +46,7 @@ export const fetchProject = async (screenerId) => {
   console.log("fetch project");
   const url = apiUrl + "/screener/" + screenerId;
   try {
-    const response = await fetch(url, {
+    const response = await authFetch(url, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -46,7 +67,7 @@ export const fetchProject = async (screenerId) => {
 export const createNewScreener = async (screenerData) => {
   const url = apiUrl + "/screener";
   try {
-    const response = await fetch(url, {
+    const response = await authFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +93,7 @@ export const saveFormSchema = async (screenerId, schema) => {
   requestData.schema = schema;
   const url = apiUrl + "/save-form-schema";
   try {
-    const response = await fetch(url, {
+    const response = await authFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -96,7 +117,7 @@ export const saveDmnModel = async (screenerId, dmnModel) => {
   requestData.dmnModel = dmnModel;
   const url = apiUrl + "/save-dmn-model";
   try {
-    const response = await fetch(url, {
+    const response = await authFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -117,7 +138,7 @@ export const saveDmnModel = async (screenerId, dmnModel) => {
 export const submitForm = async (screenerId, formData) => {
   const url = apiUrl + "/decision?screenerId=" + screenerId;
   try {
-    const response = await fetch(url, {
+    const response = await authFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -140,7 +161,7 @@ export const submitForm = async (screenerId, formData) => {
 export const publishScreener = async (screenerId) => {
   const url = apiUrl + "/publish";
   try {
-    const response = await fetch(url, {
+    const response = await authFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
