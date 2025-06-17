@@ -1,4 +1,4 @@
-package org.acme.filter;
+package org.acme.auth;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;

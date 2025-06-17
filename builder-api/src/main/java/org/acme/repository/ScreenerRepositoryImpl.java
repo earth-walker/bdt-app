@@ -49,6 +49,19 @@ public class ScreenerRepositoryImpl implements ScreenerRepository {
         return Optional.of(screener);
     }
 
+    @Override
+    public Optional<Screener> getScreenerMetaDataOnly(String screenerId){
+        Optional<Map<String, Object>> dataOpt = FirestoreUtils.getFirestoreDocById(CollectionNames.SCREENER_COLLECTION, screenerId);
+        if (dataOpt.isEmpty()){
+            return Optional.empty();
+        }
+        Map<String, Object> data = dataOpt.get();
+        Screener screener = ScreenerMapper.fromMap(data);
+
+        return Optional.of(screener);
+    }
+
+
     private Boolean doesAttributeExistAndOfType(Map<String, Object> map, String key, Class<?> expectedClass){
         return map.containsKey(key) && expectedClass.isInstance(map.get(key));
     }

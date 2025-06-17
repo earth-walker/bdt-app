@@ -10,7 +10,7 @@ import DmnEditorView from "./DmnEditorView";
 import Preview from "./Preview";
 import Publish from "./Publish";
 
-function Project({ selectedProject, setSelectedProject }) {
+function Project({ selectedProject, setSelectedProject, clearUserState }) {
   const [activeTab, setActiveTab] = createSignal("Form Editor");
   const [setIsFormDirty] = createSignal(false);
   const [isDmnDirty, setIsDmnDirty] = createSignal(false);
@@ -31,6 +31,7 @@ function Project({ selectedProject, setSelectedProject }) {
     <div className="h-screen flex flex-col">
       <Header
         returnToProjectsList={() => setSelectedProject(undefined)}
+        clearUserState={clearUserState}
       ></Header>
       <div class="flex border-b border-gray-200">
         <span className="py-2 px-4 font-bold text-gray-600">

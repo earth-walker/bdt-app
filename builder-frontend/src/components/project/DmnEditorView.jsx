@@ -42,7 +42,7 @@ function DmnEditorView() {
 
     // Load a sample or empty diagram
     const initialDmn = getDmnModelFromStorage();
-    console.log({ initialDmn });
+
     if (initialDmn) {
       await modeler.importXML(initialDmn).catch((err) => {
         console.error("Failed to import DMN XML", err);
@@ -51,15 +51,7 @@ function DmnEditorView() {
       await modeler.importXML(defaultXML).catch((err) => {
         console.error("Failed to import DMN XML", err);
       });
-      // modeler.on("commandStack.changed", async () => {
-      //   console.log("Change detected");
-      //   const { xml } = await modeler.saveXML({ format: true });
-      //   setIsDmnDirty(true);
-      //   console.log(xml);
-      //   debounce(() => {
-      //     saveDmnModelToStorageDebounced(xml);
-      //   }, 500);
-      // });
+
       const activeEditor = modeler.getActiveViewer();
       const eventBus = activeEditor.get("eventBus");
 
@@ -75,16 +67,6 @@ function DmnEditorView() {
       eventBus.on("commandStack.changed", async function (event) {
         debouncedSave();
       });
-
-      //Try figure out how to listen in on all events not just higher DRD events
-
-      // eventBus.on("directEditing.complete", async function (event) {
-      //   debouncedSave();
-      // });
-
-      // eventBus.on("decisionTable.updated", async function (event) {
-      //   debouncedSave();
-      // });
     }
     onCleanup(() => {
       modeler.destroy();
@@ -98,6 +80,7 @@ function DmnEditorView() {
     const { xml } = await modeler.saveXML({ format: true });
     setIsUnsaved(false);
     setIsSaving(true);
+    saveDmnModelToStorageDebounced(xml);
     saveDmnModel(screenerId, xml);
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => setIsSaving(false), 500);

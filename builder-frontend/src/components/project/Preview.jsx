@@ -22,43 +22,21 @@ export default function Preview({ screenerName }) {
     };
   }
 
-  // const submitForm = async (data) => {
-  //   try {
-  //     let results = await getDecisionResult(screenerName, data);
-  //     if (!Array.isArray(results)) {
-  //       results = [results];
-  //     }
-  //     setResults(results);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
   const handleSubmitForm = async (data) => {
     let results = await submitForm(selectedProject.id, data);
-    console.log("submit form");
     setResults(results);
   };
 
   return (
     <>
       <div>
-        {/* <ErrorBoundary
-          fallback={(error, reset) => <ErrorPage error={error}></ErrorPage>}
-        > */}
-        {/* {data.loading && <Loading></Loading>} */}
-        {
-          <>
-            <FormRenderer
-              schema={schema}
-              submitForm={handleSubmitForm}
-            ></FormRenderer>
-            <div className="pt-4">
-              <Results results={results}></Results>
-            </div>
-          </>
-        }
-        {/* </ErrorBoundary> */}
+        <FormRenderer
+          schema={schema}
+          submitForm={handleSubmitForm}
+        ></FormRenderer>
+        <div className="pt-4">
+          <Results results={results}></Results>
+        </div>
       </div>
     </>
   );

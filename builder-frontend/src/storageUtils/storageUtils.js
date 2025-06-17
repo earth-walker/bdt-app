@@ -17,14 +17,15 @@ export const getFormSchemaFromStorage = () => {
 export const getDmnModelFromStorage = () => {
   const dmnEscaped = sessionStorage.getItem(StorageKeys.DMN_MODEL);
 
-  const dmn = dmnEscaped
-    .replace(/\\"/g, '"')
-    .replace(/\\r\\n/g, "\n")
-    .replace(/\\n/g, "\n");
-
-  if (!dmn || dmn == "null") {
+  if (!dmnEscaped || dmnEscaped == "null") {
     return undefined;
   } else {
+    const dmn = dmnEscaped
+      .replace(/\\"/g, '"')
+      .replace(/\\r\\n/g, "\n")
+      .replace(/\\n/g, "\n");
+
+    console.log(dmn);
     return dmn;
   }
 };

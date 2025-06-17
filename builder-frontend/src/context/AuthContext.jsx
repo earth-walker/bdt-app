@@ -13,6 +13,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
+import { clearSessionStorage } from "../storageUtils/storageUtils";
 import { auth } from "../firebase/firebase";
 
 const AuthContext = createContext();
@@ -26,6 +27,7 @@ export function AuthProvider(props) {
   onMount(() => {
     unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
+      clearSessionStorage();
       setLoading(false);
     });
   });

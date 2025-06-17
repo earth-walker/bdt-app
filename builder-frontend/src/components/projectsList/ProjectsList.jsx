@@ -5,6 +5,7 @@ import NewScreenerForm from "./NewScreenerForm";
 export default function ProjectsList({
   setSelectedProject,
   handleCreateNewScreener,
+  clearUserState,
 }) {
   const [data] = createResource(fetchProjects);
   const [isModalVisible, setIsModalVisible] = createSignal(false);
@@ -14,6 +15,7 @@ export default function ProjectsList({
       <div>
         <Header
           returnToProjectsList={() => setSelectedProject(undefined)}
+          clearUserState={clearUserState}
         ></Header>
         <Show when={data} fallback={<div>Loading...</div>}>
           <div className="flex flex-wrap gap-4 p-4 w-100">

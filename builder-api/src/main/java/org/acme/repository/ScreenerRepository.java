@@ -12,6 +12,8 @@ public interface ScreenerRepository {
 
     public Optional<Screener> getScreener(String screenerId);
 
+    public Optional<Screener> getScreenerMetaDataOnly(String screenerId);
+
     public String saveNewScreener(Screener screener) throws Exception;
 
     public void updateScreener(Screener screener) throws Exception;

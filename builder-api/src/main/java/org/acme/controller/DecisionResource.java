@@ -44,7 +44,12 @@ public class DecisionResource {
         }
 
         InputStream dmnFileInputStream = dmnDataOpt.get();
-        List<Map<String, Object>> result = dmnService.evaluateDecision(dmnFileInputStream, inputData);
+        List<Map<String, Object>> result;
+        try {
+            result = dmnService.evaluateDecision(dmnFileInputStream, inputData);
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
 
         if (!result.isEmpty()){
             return Response.ok().entity(result).build();

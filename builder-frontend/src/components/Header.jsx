@@ -1,10 +1,10 @@
 import { useAuth } from "../context/AuthContext";
 import { clearSessionStorage } from "../storageUtils/storageUtils";
 
-export default function Header({ returnToProjectsList }) {
+export default function Header({ returnToProjectsList, clearUserState }) {
   const { logout } = useAuth();
   const handleLogout = () => {
-    clearSessionStorage();
+    clearUserState();
     logout();
   };
   return (

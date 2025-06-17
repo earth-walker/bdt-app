@@ -137,6 +137,8 @@ export const saveDmnModel = async (screenerId, dmnModel) => {
 
 export const submitForm = async (screenerId, formData) => {
   const url = apiUrl + "/decision?screenerId=" + screenerId;
+  if (!formData || Object.keys(formData).length === 0) return {};
+
   try {
     const response = await authFetch(url, {
       method: "POST",

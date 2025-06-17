@@ -10,13 +10,14 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.model.dmn.Dmn;
 import org.camunda.bpm.model.dmn.DmnModelInstance;
 
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 @ApplicationScoped
 public class CamundaDmnService implements DmnService {
-    public List<Map<String, Object>> evaluateDecision(InputStream inputStream, Map<String, Object> inputs) {
+    public List<Map<String, Object>> evaluateDecision(InputStream inputStream, Map<String, Object> inputs) throws IOException {
         // create a default DMN engine
         DmnEngine dmnEngine = DmnEngineConfiguration
                 .createDefaultDmnEngineConfiguration()
@@ -33,7 +34,6 @@ public class CamundaDmnService implements DmnService {
         VariableMap variables = Variables.createVariables();
         for (String key : inputs.keySet()) {
             variables = variables.putValue(key, inputs.get(key));
-
         }
 
         DmnDecisionResult results = dmnEngine.evaluateDecision(decision, variables);
