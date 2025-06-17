@@ -43,7 +43,6 @@ export const fetchProjects = async () => {
 };
 
 export const fetchProject = async (screenerId) => {
-  console.log("fetch project");
   const url = apiUrl + "/screener/" + screenerId;
   try {
     const response = await authFetch(url, {
@@ -84,6 +83,27 @@ export const createNewScreener = async (screenerData) => {
   } catch (error) {
     console.error("Error creating new project:", error);
     throw error; // rethrow so you can handle it in your component if needed
+  }
+};
+
+export const updateScreener = async (screenerData) => {
+  const url = apiUrl + "/screener";
+  try {
+    const response = await authFetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(screenerData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Update failed with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error;
   }
 };
 

@@ -1,6 +1,6 @@
 import "./App.css";
 import { createSignal, onMount } from "solid-js";
-import { createNewScreener, fetchProject } from "./api/api";
+import { createNewScreener, updateScreener, fetchProject } from "./api/api";
 import {
   getSelectedProjectFromStorage,
   clearSessionStorage,
@@ -54,8 +54,15 @@ function App() {
       setSelectedProject(newScreener);
       sessionStorage.setItem("selectedProject", JSON.stringify(newScreener));
     } catch (e) {
-      console.log("Error creating screener with data:");
-      console.log(screenerData);
+      console.log("Error creating screener", e);
+    }
+  };
+
+  const handleEditScreener = async (screenerData) => {
+    try {
+      return await updateScreener(screenerData);
+    } catch (e) {
+      console.log("Error editing screener", e);
     }
   };
 
@@ -68,6 +75,7 @@ function App() {
       return (
         <ProjectsList
           handleCreateNewScreener={handleCreateNewScreener}
+          handleEditScreener={handleEditScreener}
           setSelectedProject={handleSelectProject}
           clearUserState={clearUserState}
         ></ProjectsList>
