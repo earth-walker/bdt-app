@@ -107,6 +107,26 @@ export const updateScreener = async (screenerData) => {
   }
 };
 
+export const deleteScreener = async (screenerData) => {
+  const url = apiUrl + "/screener/delete?screenerId=" + screenerData.id;
+  try {
+    const response = await authFetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Update failed with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error;
+  }
+};
+
 export const saveFormSchema = async (screenerId, schema) => {
   const requestData = {};
   requestData.screenerId = screenerId;

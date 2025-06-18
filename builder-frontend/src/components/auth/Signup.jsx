@@ -112,7 +112,7 @@ export default function Signup({ toggleMode }) {
         Sign Up
       </button>
       <div className="text-gray-600 pt-4 text-center" onClick={toggleMode}>
-        Have an account?
+        Have an account?&nbsp;
         <span className="text-gray-700 font-bold hover:underline hover:cursor-pointer">
           Sign In
         </span>

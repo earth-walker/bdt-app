@@ -1,6 +1,6 @@
 import "./App.css";
 import { createSignal, onMount } from "solid-js";
-import { createNewScreener, updateScreener, fetchProject } from "./api/api";
+import { createNewScreener, fetchProject } from "./api/api";
 import {
   getSelectedProjectFromStorage,
   clearSessionStorage,
@@ -55,14 +55,6 @@ function App() {
       sessionStorage.setItem("selectedProject", JSON.stringify(newScreener));
     } catch (e) {
       console.log("Error creating screener", e);
-    }
-  };
-
-  const handleEditScreener = async (screenerData) => {
-    try {
-      return await updateScreener(screenerData);
-    } catch (e) {
-      console.log("Error editing screener", e);
     }
   };
 

@@ -1,13 +1,12 @@
 import { For, createResource, createSignal } from "solid-js";
 import Header from "../Header";
-import { fetchProjects } from "../../api/api";
+import { fetchProjects, updateScreener, deleteScreener } from "../../api/api";
 import NewScreenerForm from "./NewScreenerForm";
 import MenuIcon from "../icon/MenuIcon";
 import EditScreenerForm from "./EditScreenerForm";
 export default function ProjectsList({
   setSelectedProject,
   handleCreateNewScreener,
-  handleEditScreener,
   clearUserState,
 }) {
   const [data, { refetch }] = createResource(fetchProjects);
@@ -22,13 +21,23 @@ export default function ProjectsList({
     setIsEditgModalVisible(true);
   };
 
-  const handleUpdateScreenerClicked = async (updateData) => {
+  const handleUpdateScreener = async (screenerData) => {
     try {
-      await handleEditScreener(updateData);
+      await updateScreener(screenerData);
       refetch();
       setIsEditgModalVisible(false);
     } catch (e) {
-      return e;
+      console.log("Error editing screener", e);
+    }
+  };
+
+  const handleDeleteScreener = async (screenerData) => {
+    try {
+      await deleteScreener(screenerData);
+      refetch();
+      setIsEditgModalVisible(false);
+    } catch (e) {
+      console.log("Error deleting screener", e);
     }
   };
 
@@ -82,7 +91,8 @@ export default function ProjectsList({
       )}
       {isEditModalVisible() && (
         <EditScreenerForm
-          handleEditScreener={handleUpdateScreenerClicked}
+          handleEditScreener={handleUpdateScreener}
+          handleDeleteScreener={handleDeleteScreener}
           setIsEditModalVisible={setIsEditgModalVisible}
           screenerData={editModelData()}
         ></EditScreenerForm>
