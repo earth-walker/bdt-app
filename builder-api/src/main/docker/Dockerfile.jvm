@@ -1,17 +1,22 @@
 ####
 # This Dockerfile is used in order to build a container that runs the Quarkus application in JVM mode
 #
+#
 # Before building the container image run:
 #
-# ./mvnw package
+# ./mvnw package -DskipTests
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/builder-api-jvm .
+# podman build -f src/main/docker/Dockerfile.jvm -t us-central1-docker.pkg.dev/benefits-decision-toolkit/benefit-decision-toolkit/builder-api:latest  .
 #
-# Then run the container using:
+# push to google artifact registry
 #
-# docker run -i --rm -p 8080:8080 quarkus/builder-api-jvm
+# podman push us-central1-docker.pkg.dev/benefits-decision-toolkit/benefit-decision-toolkit/builder-api:latest
+#
+# run the container using:
+#
+# docker run -i --rm -p 8080:8080 us-central1-docker.pkg.dev/benefits-decision-toolkit/benefit-decision-toolkit/builder-api:latest
 #
 # If you want to include the debug port into your docker image
 # you will have to expose the debug port (default 5005 being the default) like this :  EXPOSE 8080 5005.

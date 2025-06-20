@@ -12,6 +12,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  signInWithRedirect,
 } from "firebase/auth";
 import { clearSessionStorage } from "../storageUtils/storageUtils";
 import { auth } from "../firebase/firebase";
@@ -37,6 +38,7 @@ export function AuthProvider(props) {
   });
 
   const login = async (email, password) => {
+    console.log("login email password");
     return signInWithEmailAndPassword(auth, email, password);
   };
 

@@ -1,5 +1,5 @@
 import "./App.css";
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onMount, createEffect } from "solid-js";
 import { createNewScreener, fetchProject } from "./api/api";
 import {
   getSelectedProjectFromStorage,
@@ -67,7 +67,6 @@ function App() {
       return (
         <ProjectsList
           handleCreateNewScreener={handleCreateNewScreener}
-          handleEditScreener={handleEditScreener}
           setSelectedProject={handleSelectProject}
           clearUserState={clearUserState}
         ></ProjectsList>

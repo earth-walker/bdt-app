@@ -1,5 +1,7 @@
 {
-  "hosting": {
+  "hosting": [
+    {
+      "target": "screener-frontend",
     "public": "./screener-frontend/dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
@@ -8,5 +10,17 @@
         "destination": "/index.html"
       }
     ]
-  }
+  },
+    {
+      "target": "builder-frontend",
+      "public": "./builder-frontend/dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
 }

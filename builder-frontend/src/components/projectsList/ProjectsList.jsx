@@ -65,7 +65,7 @@ export default function ProjectsList({
                     onClick={() => setSelectedProject(item)}
                     class="rounded-lg p-4 w-80 h-60 border-1 shadow-md border-gray-300  hover:shadow-lg hover:bg-gray-100"
                   >
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-4">
                       <div className="text-xl font-bold">
                         {item.screenerName}
                       </div>
