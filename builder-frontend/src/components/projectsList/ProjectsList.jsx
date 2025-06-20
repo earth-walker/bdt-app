@@ -51,7 +51,7 @@ export default function ProjectsList({
         <Show when={data} fallback={<div>Loading...</div>}>
           <div className="flex flex-wrap gap-4 p-4 w-100">
             <div
-              onClick={() => setIsModalVisible(true)}
+              onClick={() => setIsNewScreenerModalVisible(true)}
               class="rounded-lg p-4 w-80 h-60 flex justify-center border-6 shadow-md border-gray-300  hover:shadow-lg hover:bg-gray-100"
             >
               <div className="flex items-center text-2xl font-bold">
