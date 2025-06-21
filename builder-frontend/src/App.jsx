@@ -11,6 +11,7 @@ import ProjectsList from "./components/projectslist/ProjectsList";
 import Loading from "./components/Loading";
 import AuthForm from "./components/auth/AuthForm";
 import { useAuth } from "./context/AuthContext";
+import KogitoDmnEditorView from "./components/project/KogitoDmnEditorView";
 
 function App() {
   const [selectedProject, setSelectedProject] = createSignal();
@@ -83,6 +84,14 @@ function App() {
   }
 
   return <>{content()}</>;
+  // return (
+  //   <>
+  //     <div className="h-screen flex flex-col">
+  //       <div className="h-30"></div>
+  //       <KogitoDmnEditorView></KogitoDmnEditorView>
+  //     </div>
+  //   </>
+  // );
 }
 
 export default App;

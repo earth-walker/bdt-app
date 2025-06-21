@@ -9,6 +9,7 @@ import FormEditorView from "./FormEditorView";
 import DmnEditorView from "./DmnEditorView";
 import Preview from "./Preview";
 import Publish from "./Publish";
+import KogitoDmnEditorView from "./KogitoDmnEditorView";
 
 function Project({ selectedProject, setSelectedProject, clearUserState }) {
   const [activeTab, setActiveTab] = createSignal("Form Editor");
@@ -53,7 +54,9 @@ function Project({ selectedProject, setSelectedProject, clearUserState }) {
       </div>
 
       {activeTab() == "Form Editor" && <FormEditorView></FormEditorView>}
-      {activeTab() == "DMN Editor" && <DmnEditorView></DmnEditorView>}
+      {activeTab() == "DMN Editor" && (
+        <KogitoDmnEditorView></KogitoDmnEditorView>
+      )}
       {activeTab() == "Preview" && <Preview></Preview>}
       {activeTab() == "Publish" && <Publish></Publish>}
     </div>
