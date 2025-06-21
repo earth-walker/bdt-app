@@ -23,7 +23,7 @@ public class DecisionResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response post(@QueryParam("screenerId") String screenerId, Map<String, Object> inputData) {
-
+        try{
         if (screenerId == null || screenerId.isBlank()){
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Error: Missing required query parameter: screenerId")
@@ -54,6 +54,9 @@ public class DecisionResource {
 
         else {
             return Response.ok(Collections.emptyList()).build();
+        }}
+        catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

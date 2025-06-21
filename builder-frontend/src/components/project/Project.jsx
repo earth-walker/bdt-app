@@ -6,7 +6,6 @@ import {
 import "../../App.css";
 import Header from "../Header";
 import FormEditorView from "./FormEditorView";
-import DmnEditorView from "./DmnEditorView";
 import Preview from "./Preview";
 import Publish from "./Publish";
 import KogitoDmnEditorView from "./KogitoDmnEditorView";
