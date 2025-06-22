@@ -15,11 +15,15 @@ import java.util.*;
 @ApplicationScoped
 public class KieDmnService implements DmnService {
     public List<Map<String, Object>> evaluateDecision(InputStream inputStream, Map<String, Object> inputs) throws IOException {
-        KieSession kieSession = initializeKieSession(inputStream);
+        String dmnXml = convertStreamToString(inputStream);
+        KieSession kieSession = initializeKieSession(dmnXml);
         DMNRuntime dmnRuntime = kieSession.getKieRuntime(DMNRuntime.class);
 
         try {
-            DMNModel dmnModel = dmnRuntime.getModel("https://kiegroup.org/dmn/_0D40B84E-9470-4533-B1C5-85BF0223753D", "73E3B75E-B900-4817-AFF2-86B431D9732E");
+            DmnParser dmnParser = new DmnParser(dmnXml);
+            String name = dmnParser.getName();
+            String nameSpace = dmnParser.getNameSpace();
+            DMNModel dmnModel = dmnRuntime.getModel(nameSpace, name);
 
             DMNContext context = dmnRuntime.newContext();
             for (String key : inputs.keySet()) {
@@ -46,9 +50,8 @@ public class KieDmnService implements DmnService {
         }
     }
 
-    private KieSession initializeKieSession(InputStream inputStream) throws IOException {
+    private KieSession initializeKieSession(String dmnXml) throws IOException {
         KieSession kieSession;
-        String dmnXml = convertStreamToString(inputStream);
         KieServices kieServices = KieServices.Factory.get();
         KieFileSystem kfs = kieServices.newKieFileSystem();
         ReleaseId myReleaseId = kieServices.newReleaseId("org.myorg", "my-dmn-module", "1.0.0");
