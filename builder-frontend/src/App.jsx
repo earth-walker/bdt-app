@@ -17,7 +17,6 @@ function App() {
   const [selectedProject, setSelectedProject] = createSignal();
   const [isLoading, setIsLoading] = createSignal(false);
   const { user } = useAuth();
-  const projectName = "Test Project";
 
   onMount(() => {
     const project = getSelectedProjectFromStorage();

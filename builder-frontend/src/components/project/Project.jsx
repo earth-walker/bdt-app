@@ -11,9 +11,7 @@ import Publish from "./Publish";
 import KogitoDmnEditorView from "./KogitoDmnEditorView";
 
 function Project({ selectedProject, setSelectedProject, clearUserState }) {
-  const [activeTab, setActiveTab] = createSignal("Form Editor");
-  const [setIsFormDirty] = createSignal(false);
-  const [isDmnDirty, setIsDmnDirty] = createSignal(false);
+  const [activeTab, setActiveTab] = createSignal("DMN Editor");
 
   onMount(() => {
     const tab = getTabFromStorage();
@@ -38,7 +36,7 @@ function Project({ selectedProject, setSelectedProject, clearUserState }) {
           {" "}
           {selectedProject().screenerName}
         </span>
-        {["Form Editor", "DMN Editor", "Preview", "Publish"].map((tab) => (
+        {["DMN Editor", "Form Editor", "Preview", "Publish"].map((tab) => (
           <button
             class={`px-4 py-2 -mb-px text-sm font-medium border-b-2 transition-colors ${
               activeTab() === tab

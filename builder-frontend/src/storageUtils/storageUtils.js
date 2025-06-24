@@ -41,7 +41,7 @@ export const getTabFromStorage = () => {
   const tab = sessionStorage.getItem(StorageKeys.TAB);
   if (tab) {
     return tab;
-  } else return "Form Editor";
+  } else return "DMN Editor";
 };
 
 export const saveTabToStorage = (tab) => {
