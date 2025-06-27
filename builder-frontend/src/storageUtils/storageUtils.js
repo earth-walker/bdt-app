@@ -24,8 +24,6 @@ export const getDmnModelFromStorage = () => {
       .replace(/\\"/g, '"')
       .replace(/\\r\\n/g, "\n")
       .replace(/\\n/g, "\n");
-
-    console.log(dmn);
     return dmn;
   }
 };
@@ -53,8 +51,6 @@ export const saveFormSchemaToStorageDebounced = debounce((schema) => {
 }, 500);
 
 export const saveDmnModelToStorageDebounced = debounce((model) => {
-  console.log("saving");
-  console.log(model);
   sessionStorage.setItem(StorageKeys.DMN_MODEL, model);
 }, 500);
 

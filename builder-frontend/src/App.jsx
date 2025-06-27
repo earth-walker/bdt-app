@@ -21,7 +21,6 @@ function App() {
   onMount(() => {
     const project = getSelectedProjectFromStorage();
     if (project) {
-      console.log(project);
       setSelectedProject(project);
     }
   });

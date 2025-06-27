@@ -57,9 +57,7 @@ export default function EditScreenerForm({
 
   const handleDeleteClicked = (e) => {
     e.preventDefault();
-    console.log("delete clicked");
     setIsConfirmationVisible(true);
-    console.log("test");
   };
 
   return (

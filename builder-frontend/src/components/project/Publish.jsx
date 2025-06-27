@@ -28,7 +28,6 @@ export default function Publish() {
   };
 
   const handlePublish = async () => {
-    console.log("handle publish");
     try {
       setIsLoading(true);
       await publishScreener(screenerId);

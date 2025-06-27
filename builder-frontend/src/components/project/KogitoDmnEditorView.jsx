@@ -15,22 +15,43 @@ export default function KogitoDmnEditorView() {
   let editor;
   let timeoutId;
 
-  onMount(() => {
-    // Initialize the DMN Editor directly without the envelope
+  async function loadUtilityModel() {
+    const res = await fetch("/dmn/utility.dmn");
+    if (!res.ok) console.log("Failed to load utility.dmn");
+    return await res.text();
+  }
 
+  async function loadScreenerModel() {
     let initialDmn = getDmnModelFromStorage();
     if (!initialDmn) initialDmn = "";
     else {
-      const firstChar = initialDmn.charAt(0); // Get the first character
-      const lastChar = initialDmn.charAt(initialDmn.length - 1); // Get the last character
+      const firstChar = initialDmn.charAt(0);
+      const lastChar = initialDmn.charAt(initialDmn.length - 1);
       if (firstChar == '"' && lastChar == '"')
         initialDmn = initialDmn.slice(1, -1);
     }
+    return initialDmn;
+  }
+
+  const initializeEditor = async () => {
+    const [utilityDmn, initialDmn] = await Promise.all([
+      loadUtilityModel(),
+      loadScreenerModel(),
+    ]);
+    console.log("util:");
+    console.log(utilityDmn);
 
     editor = DmnEditor.open({
-      container: container, // Reference to the DOM container where the editor will be embedded
-      initialContent: Promise.resolve(initialDmn), // Initial content of the editor (empty string in this case)
-      readOnly: false, // Set to true if you want the editor to be read-only
+      container: container,
+      initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "screener.dmn",
+      initialContent: Promise.resolve(initialDmn),
+      resources: new Map([
+        [
+          "utility.dmn",
+          { contentType: "text", content: Promise.resolve(utilityDmn) },
+        ],
+      ]),
+      readOnly: false,
     });
 
     editor.subscribeToContentChanges(async (isDirty) => {
@@ -40,10 +61,13 @@ export default function KogitoDmnEditorView() {
         setIsUnsaved("Not Dirty");
       }
     });
+  };
+
+  onMount(async () => {
+    initializeEditor();
   });
 
   onCleanup(() => {
-    // Cleanup the editor when the component is unmounted
     if (editor) editor.close();
   });
 
@@ -51,6 +75,7 @@ export default function KogitoDmnEditorView() {
     const selectedProject = getSelectedProjectFromStorage();
     const screenerId = selectedProject.id;
     const xml = await editor.getContent();
+    console.log(xml);
     setIsUnsaved(false);
     setIsSaving(true);
     saveDmnModelToStorageDebounced(xml);

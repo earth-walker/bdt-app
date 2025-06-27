@@ -38,12 +38,10 @@ export function AuthProvider(props) {
   });
 
   const login = async (email, password) => {
-    console.log("login email password");
     return signInWithEmailAndPassword(auth, email, password);
   };
 
   const register = async (email, password) => {
-    console.log("register");
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
