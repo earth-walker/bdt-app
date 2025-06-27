@@ -38,8 +38,6 @@ export default function KogitoDmnEditorView() {
       loadUtilityModel(),
       loadScreenerModel(),
     ]);
-    console.log("util:");
-    console.log(utilityDmn);
 
     editor = DmnEditor.open({
       container: container,
@@ -75,7 +73,6 @@ export default function KogitoDmnEditorView() {
     const selectedProject = getSelectedProjectFromStorage();
     const screenerId = selectedProject.id;
     const xml = await editor.getContent();
-    console.log(xml);
     setIsUnsaved(false);
     setIsSaving(true);
     saveDmnModelToStorageDebounced(xml);
