@@ -35,7 +35,7 @@ export default function KogitoDmnEditorView() {
 
   const initializeEditor = async () => {
     const [utilityDmn, initialDmn] = await Promise.all([
-      loadUtilityModel(),
+      // loadUtilityModel(),
       loadScreenerModel(),
     ]);
 
