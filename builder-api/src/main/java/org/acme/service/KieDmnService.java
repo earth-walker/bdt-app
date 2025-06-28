@@ -36,8 +36,10 @@ public class KieDmnService implements DmnService {
                 Map<String, Object> result = new HashMap<>();
                 result.put(r.getDecisionName(), r.getResult());
                 results.add(result);
-
             }
+
+            results.add(getErrorMessages(dmnResult));
+
             kieSession.dispose();
             return results;
         }
@@ -48,6 +50,13 @@ public class KieDmnService implements DmnService {
                 kieSession.dispose();
             }
         }
+    }
+
+    private static Map<String, Object> getErrorMessages(DMNResult dmnResult) {
+        List<String> dmnMessages = dmnResult.getMessages().stream().map(m -> m.getText()).toList();
+        Map<String,Object> messages = new HashMap<>();
+        messages.put("Error Messages", dmnMessages);
+        return messages;
     }
 
     private KieSession initializeKieSession(String dmnXml) throws IOException {
