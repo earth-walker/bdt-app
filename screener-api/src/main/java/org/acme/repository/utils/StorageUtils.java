@@ -21,6 +21,12 @@ public class StorageUtils {
     public static String getScreenerPublishedDmnModelPath(String screenerId){
         return "dmn/published/" + screenerId + ".dmn";
     }
+
+
+    public static String getPublishedCompiledDmnModelPath(String screenerId){
+        return "compiled_dmn_models/published/" + screenerId + "/kiebase.ser";
+    }
+
     public static Map<String, Object> getFormSchemaFromStorage(String filePath) {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();

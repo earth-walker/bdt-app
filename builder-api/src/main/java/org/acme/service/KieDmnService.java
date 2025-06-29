@@ -1,19 +1,23 @@
 package org.acme.service;
 
+import io.grpc.Context;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.acme.repository.utils.StorageUtils;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.*;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.dmn.api.core.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 
 @ApplicationScoped
 public class KieDmnService implements DmnService {
+
     public List<Map<String, Object>> evaluateDecision(InputStream inputStream, Map<String, Object> inputs) throws IOException {
         String dmnXml = convertStreamToString(inputStream);
         KieSession kieSession = initializeKieSession(dmnXml);
@@ -82,5 +86,49 @@ public class KieDmnService implements DmnService {
             }
         }
         return textBuilder.toString();
+    }
+
+
+    public byte[] compileDmnModel(String dmnXml, Map<String, String> importedModels, String modelId) throws IOException {
+        Log.info("Compiling and saving DMN model: " + modelId);
+
+        KieServices kieServices = KieServices.Factory.get();
+        // 1. Compile the DMN XML into a KieBase
+        KieFileSystem kfs = kieServices.newKieFileSystem();
+        // Use a unique ReleaseId for each compilation if you plan to update models
+        // For production, consider versioning the ReleaseId carefully.
+        ReleaseId releaseId = kieServices.newReleaseId("user-model", modelId, "1.0.0");
+        kfs.write("src/main/resources/model.dmn", dmnXml);
+
+
+        // Write all imported DMN models
+        for (Map.Entry<String, String> entry : importedModels.entrySet()) {
+            // Ensure the path starts with "src/main/resources/" to be picked up by KieBuilder
+            String resourcePath = entry.getKey();
+            if (!resourcePath.startsWith("src/main/resources/")) {
+                resourcePath = "src/main/resources/" + resourcePath;
+            }
+            kfs.write(resourcePath, entry.getValue());
+            Log.info("Added imported DMN model to KieFileSystem: " + resourcePath);
+        }
+        kfs.generateAndWritePomXML(releaseId);
+
+        KieBuilder kieBuilder = kieServices.newKieBuilder(kfs);
+        kieBuilder.buildAll();
+        Results results = kieBuilder.getResults();
+
+        if (results.hasMessages(Message.Level.ERROR)) {
+            Log.error("DMN Compilation errors for model " + modelId + ":");
+            for (Message message : results.getMessages(Message.Level.ERROR)) {
+                Log.error(message.getText());
+            }
+            throw new IllegalStateException("DMN Model compilation failed for model: " + modelId);
+        }
+
+        InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
+        byte[] kieModuleBytes = kieModule.getBytes();
+
+        Log.info("Serialized kieModule for model " + modelId);
+        return kieModuleBytes;
     }
 }

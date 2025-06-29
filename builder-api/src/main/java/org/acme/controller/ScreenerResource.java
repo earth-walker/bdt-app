@@ -15,7 +15,9 @@ import org.acme.dto.SaveSchemaRequest;
 import org.acme.model.Screener;
 import org.acme.repository.ScreenerRepository;
 import org.acme.repository.utils.StorageUtils;
+import org.acme.service.DmnService;
 
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +29,9 @@ public class ScreenerResource {
 
     @Inject
     ScreenerRepository screenerRepository;
+
+    @Inject
+    DmnService dmnService;
 
     @GET
     @Path("/screeners")
@@ -131,8 +136,6 @@ public class ScreenerResource {
                     .build();
         }
         try {
-
-
             String filePath = StorageUtils.getScreenerWorkingFormSchemaPath(screenerId);
             StorageUtils.writeJsonToStorage(filePath, schema);
             Log.info("Saved form schema of screener " + screenerId + " to storage");
@@ -165,9 +168,6 @@ public class ScreenerResource {
                     .build();
         }
         try {
-
-            // perform authorization for screener
-
             String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
             StorageUtils.writeStringToStorage(filePath, dmnModel, "application/xml");
             Log.info("Saved DMN model of screener " + screenerId + " to storage");
@@ -194,14 +194,28 @@ public class ScreenerResource {
         if (!isUserAuthorizedToAccessScreener(userId, screenerId)) return Response.status(Response.Status.UNAUTHORIZED).build();
 
         try {
-            // Perf authorization to publish screener
             Screener updateScreener = new Screener();
             updateScreener.setId(screenerId);
             updateScreener.setIsPublished(true);
             updateScreener.setLastPublishDate(Instant.now().toString());
+            //update screener metadata
             screenerRepository.updateScreener(updateScreener);
-            StorageUtils.updatePublishedScreenerArtifacts(screenerId);
+
+            //update published form schema
+            StorageUtils.updatePublishedFormSchemaArtifact(screenerId);
             Log.info("Updated Screener " + screenerId + " to published.");
+
+            //update published dmn model
+            String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
+            Optional<String> dmnXml = StorageUtils.getStringFromStorage(filePath);
+            if (dmnXml.isEmpty()){
+                throw new RuntimeException("working DMN file not found");
+            }
+            byte[] serializedModel = dmnService.compileDmnModel(dmnXml.get(),new HashMap<>(), screenerId);
+            String filPath = StorageUtils.getPublishedCompiledDmnModelPath(screenerId);
+            StorageUtils.writeBytesToStorage(filPath, serializedModel, "application/octet-stream");
+            Log.info("Saved compiled dmn for model " + screenerId + " to storage.");
+
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("screenerUrl", getScreenerUrl(screenerId));
             return Response.ok().entity(responseData).build();
@@ -230,7 +244,6 @@ public class ScreenerResource {
         if (!isUserAuthorizedToAccessScreener(userId, screenerId)) return Response.status(Response.Status.UNAUTHORIZED).build();
 
         try {
-            // Perf authorization to publish screener
             Screener updateScreener = new Screener();
             updateScreener.setId(screenerId);
             updateScreener.setIsPublished(false);
@@ -257,8 +270,6 @@ public class ScreenerResource {
         if (!isUserAuthorizedToAccessScreener(userId, screenerId)) return Response.status(Response.Status.UNAUTHORIZED).build();
 
         try {
-            //AUTHORIZE delete
-
             screenerRepository.deleteScreener(screenerId);
             return Response.ok().build();
         } catch (Exception e){
@@ -275,7 +286,6 @@ public class ScreenerResource {
         }
         return false;
     }
-
 
     private boolean isUserAuthorizedToAccessScreener(String userId, String screenerId) {
         Optional<Screener> screenerOptional = screenerRepository.getScreenerMetaDataOnly(screenerId);

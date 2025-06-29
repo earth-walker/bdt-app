@@ -7,4 +7,5 @@ import java.util.Map;
 
 public interface DmnService {
     public List<Map<String, Object>> evaluateDecision(InputStream inputStream, Map<String, Object> inputs) throws IOException;
+    public byte[] compileDmnModel(String dmnXml, Map<String, String> importedModels, String modelId) throws IOException;
 }

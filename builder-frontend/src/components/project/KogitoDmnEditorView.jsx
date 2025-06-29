@@ -34,21 +34,24 @@ export default function KogitoDmnEditorView() {
   }
 
   const initializeEditor = async () => {
-    const [utilityDmn, initialDmn] = await Promise.all([
-      // loadUtilityModel(),
-      loadScreenerModel(),
-    ]);
+    // const [utilityDmn, initialDmn] = await Promise.all([
+    //   loadUtilityModel(),
+    //   loadScreenerModel(),
+    // ]);
 
+    const [initialDmn] = await Promise.all([loadScreenerModel()]);
+
+    console.log(initialDmn);
     editor = DmnEditor.open({
       container: container,
       initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "screener.dmn",
       initialContent: Promise.resolve(initialDmn),
-      resources: new Map([
-        [
-          "utility.dmn",
-          { contentType: "text", content: Promise.resolve(utilityDmn) },
-        ],
-      ]),
+      // resources: new Map([
+      //   [
+      //     "utility.dmn",
+      //     { contentType: "text", content: Promise.resolve(utilityDmn) },
+      //   ],
+      // ]),
       readOnly: false,
     });
 
