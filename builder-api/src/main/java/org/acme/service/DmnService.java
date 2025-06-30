@@ -1,11 +1,11 @@
 package org.acme.service;
-
+import org.acme.model.Screener;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface DmnService {
-    public List<Map<String, Object>> evaluateDecision(InputStream inputStream, Map<String, Object> inputs) throws IOException;
-    public byte[] compileDmnModel(String dmnXml, Map<String, String> importedModels, String modelId) throws IOException;
+    public Map<String, Object> evaluateDecision(Screener screener, Map<String, Object> inputs) throws IOException;
+    public String compilePublishedDmnModel(String screenerId) throws Exception;
+    public String compileWorkingDmnModel(String screenerId) throws Exception;
 }

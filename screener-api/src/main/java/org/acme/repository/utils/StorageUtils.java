@@ -49,6 +49,25 @@ public class StorageUtils {
         }
     }
 
+    public static Optional<byte[]> getFileBytesFromStorage(String filePath) {
+        try {
+            Bucket bucket = StorageClient.getInstance().bucket();
+            Blob blob = bucket.get(filePath);
+
+            if (blob == null || !blob.exists()) {
+                return Optional.empty();
+            }
+
+            byte[] data = blob.getContent();
+
+            return Optional.of(data);
+
+        } catch (Exception e){
+            Log.error("Error fetching file from firebase storage: ", e);
+            return Optional.empty();
+        }
+    }
+
     public static Optional<InputStream> getFileInputStreamFromStorage(String filePath) {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();

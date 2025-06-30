@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.acme.model.Screener;
 import org.acme.repository.ScreenerRepository;
 import org.acme.repository.utils.StorageUtils;
 import org.acme.service.DmnService;
@@ -19,6 +20,9 @@ public class DecisionResource {
 
     @Inject
     DmnService dmnService;
+
+    @Inject
+    ScreenerRepository screenerRepository;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -36,17 +40,20 @@ public class DecisionResource {
                     .build();
         }
 
-        String filePath = StorageUtils.getScreenerPublishedDmnModelPath(screenerId);
 
-        Optional<InputStream> dmnDataOpt = StorageUtils.getFileInputStreamFromStorage(filePath);
+        Optional<Screener> screenerOptional = screenerRepository.getScreener(screenerId);
 
-
-        if (dmnDataOpt.isEmpty()){
-            throw new NotFoundException();
+        String notFoundResponseMessage = String.format("Form %s was not found", screenerId);
+        if (screenerOptional.isEmpty()){
+            throw new NotFoundException(notFoundResponseMessage);
         }
 
-        InputStream dmnFileInputStream = dmnDataOpt.get();
-        List<Map<String, Object>> result = dmnService.evaluateDecision(dmnFileInputStream, inputData);
+        Screener screener = screenerOptional.get();
+        if (screener.getFormSchema() == null || !screener.isPublished()) {
+            throw new NotFoundException(notFoundResponseMessage);
+        }
+
+        Map<String, Object> result = dmnService.evaluateDecision(screener, inputData);
 
         if (!result.isEmpty()){
             return Response.ok(Collections.emptyList()).entity(result).build();

@@ -4,11 +4,14 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.acme.model.Screener;
 import org.acme.repository.ScreenerRepository;
 import org.acme.repository.utils.StorageUtils;
+import org.acme.service.DmnParser;
 import org.acme.service.DmnService;
 
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.*;
 
 @Path("/api/decision")
@@ -36,6 +39,24 @@ public class DecisionResource {
                     .build();
         }
 
+        Optional<Screener> screenerOptional = screenerRepository.getScreener(screenerId);
+
+        String notFoundResponseMessage = String.format("Form %s was not found", screenerId);
+        if (screenerOptional.isEmpty()){
+            throw new NotFoundException(notFoundResponseMessage);
+        }
+
+        Screener screener = screenerOptional.get();
+
+        Map<String, Object> result;
+
+        try {
+        if (screener.getLastDmnCompile() == null || Instant.parse(screener.getLastDmnSave()).isAfter(Instant.parse(screener.getLastDmnCompile()))){
+            //compile working dmn
+            String dmnXml = dmnService.compileWorkingDmnModel(screenerId);
+            updateScreenerLastCompileTime(screenerId, dmnXml);
+        }
+
         String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
         Optional<InputStream> dmnDataOpt = StorageUtils.getFileInputStreamFromStorage(filePath);
 
@@ -43,10 +64,8 @@ public class DecisionResource {
             throw new NotFoundException();
         }
 
-        InputStream dmnFileInputStream = dmnDataOpt.get();
-        List<Map<String, Object>> result;
-        try {
-            result = dmnService.evaluateDecision(dmnFileInputStream, inputData);
+        result = dmnService.evaluateDecision(screener, inputData);
+
         } catch (Exception e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
@@ -58,5 +77,15 @@ public class DecisionResource {
         else {
             return Response.ok().entity(Collections.emptyList()).build();
         }
+    }
+
+    private void updateScreenerLastCompileTime(String screenerId, String dmnXml) throws Exception {
+        Screener updateScreener = new Screener();
+        updateScreener.setId(screenerId);
+        updateScreener.setLastDmnCompile(Instant.now().toString());
+        DmnParser dmnParser = new DmnParser(dmnXml);
+        updateScreener.setWorkingDmnName(dmnParser.getName());
+        updateScreener.setWorkingDmnNameSpace(dmnParser.getNameSpace());
+        screenerRepository.updateScreener(updateScreener);
     }
 }

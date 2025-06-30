@@ -15,9 +15,9 @@ import org.acme.dto.SaveSchemaRequest;
 import org.acme.model.Screener;
 import org.acme.repository.ScreenerRepository;
 import org.acme.repository.utils.StorageUtils;
+import org.acme.service.DmnParser;
 import org.acme.service.DmnService;
 
-import java.io.InputStream;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -171,6 +171,13 @@ public class ScreenerResource {
             String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
             StorageUtils.writeStringToStorage(filePath, dmnModel, "application/xml");
             Log.info("Saved DMN model of screener " + screenerId + " to storage");
+
+
+            Screener updateScreener = new Screener();
+            updateScreener.setId(screenerId);
+            updateScreener.setLastDmnSave(Instant.now().toString());
+            //update screener metadata
+            screenerRepository.updateScreener(updateScreener);
             return Response.ok().build();
         } catch (Exception e){
             Log.info(("Failed to save DMN model for screener " + screenerId));
@@ -194,27 +201,22 @@ public class ScreenerResource {
         if (!isUserAuthorizedToAccessScreener(userId, screenerId)) return Response.status(Response.Status.UNAUTHORIZED).build();
 
         try {
-            Screener updateScreener = new Screener();
-            updateScreener.setId(screenerId);
-            updateScreener.setIsPublished(true);
-            updateScreener.setLastPublishDate(Instant.now().toString());
-            //update screener metadata
-            screenerRepository.updateScreener(updateScreener);
-
             //update published form schema
             StorageUtils.updatePublishedFormSchemaArtifact(screenerId);
             Log.info("Updated Screener " + screenerId + " to published.");
 
             //update published dmn model
-            String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
-            Optional<String> dmnXml = StorageUtils.getStringFromStorage(filePath);
-            if (dmnXml.isEmpty()){
-                throw new RuntimeException("working DMN file not found");
-            }
-            byte[] serializedModel = dmnService.compileDmnModel(dmnXml.get(),new HashMap<>(), screenerId);
-            String filPath = StorageUtils.getPublishedCompiledDmnModelPath(screenerId);
-            StorageUtils.writeBytesToStorage(filPath, serializedModel, "application/octet-stream");
-            Log.info("Saved compiled dmn for model " + screenerId + " to storage.");
+            String dmnXml = dmnService.compilePublishedDmnModel(screenerId);
+
+            Screener updateScreener = new Screener();
+            updateScreener.setId(screenerId);
+            updateScreener.setIsPublished(true);
+            updateScreener.setLastPublishDate(Instant.now().toString());
+            DmnParser dmnParser = new DmnParser(dmnXml);
+            updateScreener.setPublishedDmnName(dmnParser.getName());
+            updateScreener.setPublishedDmnNameSpace(dmnParser.getNameSpace());
+            //update screener metadata
+            screenerRepository.updateScreener(updateScreener);
 
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("screenerUrl", getScreenerUrl(screenerId));
