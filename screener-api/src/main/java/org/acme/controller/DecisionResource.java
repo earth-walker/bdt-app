@@ -6,12 +6,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.model.Screener;
 import org.acme.repository.ScreenerRepository;
-import org.acme.repository.utils.StorageUtils;
 import org.acme.service.DmnService;
-
-import java.io.InputStream;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

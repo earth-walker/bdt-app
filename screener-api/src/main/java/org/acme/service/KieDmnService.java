@@ -48,8 +48,10 @@ public class KieDmnService implements DmnService {
             List<Map<String, Object>> decisions = new ArrayList<>();
             for (DMNDecisionResult decisionResult :  dmnResult.getDecisionResults()) {
                 Map<String, Object> decisionDetail = new LinkedHashMap<>();
+                decisionDetail.put("decisionName", decisionResult.getDecisionName());
                 decisionDetail.put("result", decisionResult.getResult());
                 decisionDetail.put("status", decisionResult.getEvaluationStatus().toString());
+                decisions.add(decisionDetail);
             }
 
             response.put("decisions", decisions);

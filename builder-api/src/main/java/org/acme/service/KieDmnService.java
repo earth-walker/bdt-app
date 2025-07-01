@@ -14,7 +14,6 @@ import org.kie.dmn.api.core.*;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 
 @ApplicationScoped
