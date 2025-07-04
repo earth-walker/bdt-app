@@ -7,7 +7,7 @@ import {
   saveScreenerDataToStorage,
 } from "./storageUtils/storageUtils";
 import Project from "./components/project/Project";
-import ProjectsList from "./components/projectslist/ProjectsList";
+import ProjectsList from "./components/projectsList/ProjectsList";
 import Loading from "./components/Loading";
 import AuthForm from "./components/auth/AuthForm";
 import { useAuth } from "./context/AuthContext";
