@@ -2,6 +2,8 @@ package org.acme.service;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import com.github.javaparser.utils.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -33,7 +35,7 @@ public class DmnParser {
             System.out.println("Namespace: " + namespace);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.error(e);
         }
     }
 
