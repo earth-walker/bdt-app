@@ -23,8 +23,6 @@ public interface StorageService {
 
     String getScreenerWorkingFormSchemaPath(String screenerId);
 
-    String getScreenerPublishedDmnModelPath(String screenerId);
-
     String getScreenerPublishedFormSchemaPath(String screenerId);
 
     String getPublishedCompiledDmnModelPath(String screenerId);
