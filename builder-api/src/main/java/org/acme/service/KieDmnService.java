@@ -2,9 +2,10 @@ package org.acme.service;
 
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import org.acme.model.Screener;
-import org.acme.repository.utils.StorageUtils;
+import org.acme.persistence.StorageService;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
 import org.kie.api.io.Resource;
@@ -19,10 +20,13 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 @ApplicationScoped
 public class KieDmnService implements DmnService {
 
+    @Inject
+    private StorageService storageService;
+
     public Map<String, Object> evaluateDecision(Screener screener, Map<String, Object> inputs) throws IOException {
 
-        String filePath = StorageUtils.getWorkingCompiledDmnModelPath(screener.getId());
-        Optional<byte[]> dmnDataOpt = StorageUtils.getFileBytesFromStorage(filePath);
+        String filePath = storageService.getWorkingCompiledDmnModelPath(screener.getId());
+        Optional<byte[]> dmnDataOpt = storageService.getFileBytesFromStorage(filePath);
 
 
         if (dmnDataOpt.isEmpty()){
@@ -93,8 +97,8 @@ public class KieDmnService implements DmnService {
         }
         String dmnXml = optDmnXml.get();
         byte[] serializedModel = compileDmnModel(dmnXml, new HashMap<>(), screenerId);
-        String filPath = StorageUtils.getPublishedCompiledDmnModelPath(screenerId);
-        StorageUtils.writeBytesToStorage(filPath, serializedModel, "application/java-archive");
+        String filPath = storageService.getPublishedCompiledDmnModelPath(screenerId);
+        storageService.writeBytesToStorage(filPath, serializedModel, "application/java-archive");
         Log.info("Saved compiled published dmn for model " + screenerId + " to storage.");
         return dmnXml;
     }
@@ -106,8 +110,8 @@ public class KieDmnService implements DmnService {
         }
         String dmnXml = optDmnXml.get();
         byte[] serializedModel = compileDmnModel(dmnXml, new HashMap<>(), screenerId);
-        String filPath = StorageUtils.getWorkingCompiledDmnModelPath(screenerId);
-        StorageUtils.writeBytesToStorage(filPath, serializedModel, "application/java-archive");
+        String filPath = storageService.getWorkingCompiledDmnModelPath(screenerId);
+        storageService.writeBytesToStorage(filPath, serializedModel, "application/java-archive");
         Log.info("Saved compiled working dmn for model " + screenerId + " to storage.");
         return dmnXml;
     }
@@ -164,9 +168,9 @@ public class KieDmnService implements DmnService {
         return kieModuleBytes;
     }
 
-    private static Optional<String> getWorkingDmnXml(String screenerId) {
-        String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
-        Optional<String> dmnXml = StorageUtils.getStringFromStorage(filePath);
+    private Optional<String> getWorkingDmnXml(String screenerId) {
+        String filePath = storageService.getScreenerWorkingDmnModelPath(screenerId);
+        Optional<String> dmnXml = storageService.getStringFromStorage(filePath);
         if (dmnXml.isEmpty()){
             throw new RuntimeException("working DMN file not found");
         }

@@ -1,4 +1,4 @@
-package org.acme.repository.utils;
+package org.acme.persistence;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.storage.*;
 import com.google.firebase.cloud.StorageClient;
 import io.quarkus.logging.Log;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -13,9 +14,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 
-public class StorageUtils {
+@ApplicationScoped
+public class GoogleStorageService implements StorageService {
 
-    public static void writeStringToStorage(String filePath, String content, String contentType){
+    @Override
+    public void writeStringToStorage(String filePath, String content, String contentType){
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             InputStream inputSteam = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
@@ -26,7 +29,8 @@ public class StorageUtils {
         }
     }
 
-    public static void writeBytesToStorage(String filePath, byte[] content, String contentType){
+    @Override
+    public void writeBytesToStorage(String filePath, byte[] content, String contentType){
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             InputStream inputSteam = new ByteArrayInputStream(content);
@@ -37,7 +41,8 @@ public class StorageUtils {
         }
     }
 
-    public static void writeJsonToStorage(String filePath, JsonNode json){
+    @Override
+    public void writeJsonToStorage(String filePath, JsonNode json){
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             ObjectMapper mapper = new ObjectMapper();
@@ -49,7 +54,8 @@ public class StorageUtils {
         }
     }
 
-    public static Optional<InputStream> getFileInputStreamFromStorage(String filePath) {
+    @Override
+    public Optional<InputStream> getFileInputStreamFromStorage(String filePath) {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             Blob blob = bucket.get(filePath);
@@ -69,7 +75,8 @@ public class StorageUtils {
     }
 
 
-    public static Optional<String> getStringFromStorage(String filePath) {
+    @Override
+    public Optional<String> getStringFromStorage(String filePath) {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             Blob blob = bucket.get(filePath);
@@ -90,7 +97,8 @@ public class StorageUtils {
         }
     }
 
-    public static Optional<byte[]> getFileBytesFromStorage(String filePath) {
+    @Override
+    public Optional<byte[]> getFileBytesFromStorage(String filePath) {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             Blob blob = bucket.get(filePath);
@@ -108,30 +116,37 @@ public class StorageUtils {
             return Optional.empty();
         }
     }
-    public static String getScreenerWorkingDmnModelPath(String screenerId){
+    @Override
+    public String getScreenerWorkingDmnModelPath(String screenerId){
         return "dmn/working/" + screenerId + ".dmn";
     }
 
-    public static String getScreenerWorkingFormSchemaPath(String screenerId){
+    @Override
+    public String getScreenerWorkingFormSchemaPath(String screenerId){
         return "form/working/" + screenerId + ".json";
     }
 
-    public static String getScreenerPublishedDmnModelPath(String screenerId){
+    @Override
+    public String getScreenerPublishedDmnModelPath(String screenerId){
         return "dmn/published/" + screenerId + ".dmn";
     }
 
-    public static String getScreenerPublishedFormSchemaPath(String screenerId){
+    @Override
+    public String getScreenerPublishedFormSchemaPath(String screenerId){
         return "form/published/" + screenerId + ".json";
     }
 
-    public static String getPublishedCompiledDmnModelPath(String screenerId){
+    @Override
+    public String getPublishedCompiledDmnModelPath(String screenerId){
         return "compiled_dmn_models/published/" + screenerId + "/kiebase.ser";
     }
 
-    public static String getWorkingCompiledDmnModelPath(String screenerId){
+    @Override
+    public String getWorkingCompiledDmnModelPath(String screenerId){
         return "compiled_dmn_models/working/" + screenerId + "/kiebase.ser";
     }
-    public static Map<String, Object> getFormSchemaFromStorage(String filePath) {
+    @Override
+    public Map<String, Object> getFormSchemaFromStorage(String filePath) {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             Blob blob = bucket.get(filePath);
@@ -155,15 +170,13 @@ public class StorageUtils {
         }
     }
 
-    public static void updatePublishedFormSchemaArtifact(String screenerId) throws Exception {
+    @Override
+    public void updatePublishedFormSchemaArtifact(String screenerId) throws Exception {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
             Blob workingFormBlob = bucket.get(getScreenerWorkingFormSchemaPath(screenerId));
-//            Blob workingDmnBlob = bucket.get(getScreenerWorkingDmnModelPath(screenerId));
             CopyWriter formCopyWriter = workingFormBlob.copyTo(BlobId.of(bucket.getName(), getScreenerPublishedFormSchemaPath(screenerId)));
-//            CopyWriter dmnCopyWriter = workingDmnBlob.copyTo(BlobId.of(bucket.getName(), getScreenerPublishedDmnModelPath(screenerId)));
             formCopyWriter.getResult();
-//            dmnCopyWriter.getResult();
             Log.info("Working form schema copied to published artifact path for screener: " + screenerId);
         } catch (Exception e){
             Log.error("Error updating published form schema in cloud storage");

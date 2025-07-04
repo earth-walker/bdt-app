@@ -1,8 +1,7 @@
-package org.acme.repository;
+package org.acme.persistence;
 
 import org.acme.model.Screener;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
