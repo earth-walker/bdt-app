@@ -13,8 +13,8 @@ import org.acme.dto.PublishScreenerRequest;
 import org.acme.dto.SaveDmnRequest;
 import org.acme.dto.SaveSchemaRequest;
 import org.acme.model.Screener;
-import org.acme.repository.ScreenerRepository;
-import org.acme.repository.utils.StorageUtils;
+import org.acme.persistence.ScreenerRepository;
+import org.acme.persistence.StorageService;
 import org.acme.service.DmnParser;
 import org.acme.service.DmnService;
 
@@ -30,6 +30,9 @@ public class ScreenerResource {
     @Inject
     ScreenerRepository screenerRepository;
 
+    @Inject
+    StorageService storageService;
+    
     @Inject
     DmnService dmnService;
 
@@ -136,8 +139,8 @@ public class ScreenerResource {
                     .build();
         }
         try {
-            String filePath = StorageUtils.getScreenerWorkingFormSchemaPath(screenerId);
-            StorageUtils.writeJsonToStorage(filePath, schema);
+            String filePath = storageService.getScreenerWorkingFormSchemaPath(screenerId);
+            storageService.writeJsonToStorage(filePath, schema);
             Log.info("Saved form schema of screener " + screenerId + " to storage");
             return Response.ok().build();
         } catch (Exception e){
@@ -168,8 +171,8 @@ public class ScreenerResource {
                     .build();
         }
         try {
-            String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
-            StorageUtils.writeStringToStorage(filePath, dmnModel, "application/xml");
+            String filePath = storageService.getScreenerWorkingDmnModelPath(screenerId);
+            storageService.writeStringToStorage(filePath, dmnModel, "application/xml");
             Log.info("Saved DMN model of screener " + screenerId + " to storage");
 
 
@@ -202,7 +205,7 @@ public class ScreenerResource {
 
         try {
             //update published form schema
-            StorageUtils.updatePublishedFormSchemaArtifact(screenerId);
+            storageService.updatePublishedFormSchemaArtifact(screenerId);
             Log.info("Updated Screener " + screenerId + " to published.");
 
             //update published dmn model

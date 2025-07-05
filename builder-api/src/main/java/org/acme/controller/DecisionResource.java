@@ -5,8 +5,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.model.Screener;
-import org.acme.repository.ScreenerRepository;
-import org.acme.repository.utils.StorageUtils;
+import org.acme.persistence.ScreenerRepository;
+import org.acme.persistence.StorageService;
 import org.acme.service.DmnParser;
 import org.acme.service.DmnService;
 
@@ -19,6 +19,9 @@ public class DecisionResource {
 
     @Inject
     ScreenerRepository screenerRepository;
+
+    @Inject
+    StorageService storageService;
 
     @Inject
     DmnService dmnService;
@@ -57,8 +60,8 @@ public class DecisionResource {
             updateScreenerLastCompileTime(screenerId, dmnXml);
         }
 
-        String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
-        Optional<InputStream> dmnDataOpt = StorageUtils.getFileInputStreamFromStorage(filePath);
+        String filePath = storageService.getScreenerWorkingDmnModelPath(screenerId);
+        Optional<InputStream> dmnDataOpt = storageService.getFileInputStreamFromStorage(filePath);
 
         if (dmnDataOpt.isEmpty()){
             throw new NotFoundException();
