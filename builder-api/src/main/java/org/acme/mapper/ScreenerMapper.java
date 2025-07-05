@@ -20,7 +20,6 @@ public class ScreenerMapper {
         if (doesAttributeExistOfType(map, FieldNames.SCREENER_NAME, String.class)){
             screener.setScreenerName((String) map.get(FieldNames.SCREENER_NAME));
         }
-
         if (doesAttributeExistOfType(map, FieldNames.LAST_PUBLISHED_DATE, String.class)){
             screener.setLastPublishDate((String) map.get(FieldNames.LAST_PUBLISHED_DATE));
         }
