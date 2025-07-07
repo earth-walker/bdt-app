@@ -1,4 +1,4 @@
-package org.acme.repository.utils;
+package org.acme.persistence;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
@@ -8,8 +8,6 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.cloud.StorageClient;
 import io.quarkus.logging.Log;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;

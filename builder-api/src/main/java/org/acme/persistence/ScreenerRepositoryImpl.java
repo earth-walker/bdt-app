@@ -1,13 +1,11 @@
-package org.acme.repository;
+package org.acme.persistence;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.acme.constants.CollectionNames;
 import org.acme.constants.FieldNames;
 import org.acme.mapper.ScreenerMapper;
 import org.acme.model.Screener;
-
-import org.acme.repository.utils.FirestoreUtils;
-import org.acme.repository.utils.StorageUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +13,9 @@ import java.util.Optional;
 
 @ApplicationScoped
 public class ScreenerRepositoryImpl implements ScreenerRepository {
+
+    @Inject
+    private StorageService storageService;
 
     @Override
     public List<Screener> getScreeners(String userId) {
@@ -38,11 +39,11 @@ public class ScreenerRepositoryImpl implements ScreenerRepository {
         Map<String, Object> data = dataOpt.get();
         Screener screener = ScreenerMapper.fromMap(data);
 
-        String formPath = StorageUtils.getScreenerWorkingFormSchemaPath(screenerId);
-        Map<String, Object>  formSchema = StorageUtils.getFormSchemaFromStorage(formPath);
+        String formPath = storageService.getScreenerWorkingFormSchemaPath(screenerId);
+        Map<String, Object>  formSchema = storageService.getFormSchemaFromStorage(formPath);
         screener.setFormSchema(formSchema);
 
-        String dmnPath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
+        String dmnPath = storageService.getScreenerWorkingDmnModelPath(screenerId);
         Optional<String> dmnModel = FirestoreUtils.getFileAsStringFromStorage(dmnPath);
         dmnModel.ifPresent(screener::setDmnModel);
 

@@ -10,6 +10,8 @@ public class Screener {
     private Boolean isPublished;
     private String organizationName;
     private String screenerName;
+    private String publishedDmnNameSpace;
+    private String publishedDmnName;
 
     public Screener(Map<String, Object> model, boolean isPublished){
         this.formSchema = model;
@@ -59,5 +61,17 @@ public class Screener {
 
     public void setOrganizationName(){
         this.organizationName = organizationName;
+    }
+    public String getPublishedDmnNameSpace(){
+        return this.publishedDmnNameSpace;
+    }
+    public String getPublishedDmnName(){
+        return this.publishedDmnName;
+    }
+    public void setPublishedDmnName(String name){
+        this.publishedDmnName = name;
+    }
+    public void setPublishedDmnNameSpace(String nameSpace){
+        this.publishedDmnNameSpace = nameSpace;
     }
 }
