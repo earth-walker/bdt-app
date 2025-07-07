@@ -21,6 +21,12 @@ public class StorageUtils {
     public static String getScreenerPublishedDmnModelPath(String screenerId){
         return "dmn/published/" + screenerId + ".dmn";
     }
+
+
+    public static String getPublishedCompiledDmnModelPath(String screenerId){
+        return "compiled_dmn_models/published/" + screenerId + "/kiebase.ser";
+    }
+
     public static Map<String, Object> getFormSchemaFromStorage(String filePath) {
         try {
             Bucket bucket = StorageClient.getInstance().bucket();
@@ -40,6 +46,25 @@ public class StorageUtils {
         } catch (Exception e){
             Log.error("Error fetching form model from firebase storage: ", e);
             return null;
+        }
+    }
+
+    public static Optional<byte[]> getFileBytesFromStorage(String filePath) {
+        try {
+            Bucket bucket = StorageClient.getInstance().bucket();
+            Blob blob = bucket.get(filePath);
+
+            if (blob == null || !blob.exists()) {
+                return Optional.empty();
+            }
+
+            byte[] data = blob.getContent();
+
+            return Optional.of(data);
+
+        } catch (Exception e){
+            Log.error("Error fetching file from firebase storage: ", e);
+            return Optional.empty();
         }
     }
 

@@ -20,22 +20,14 @@ public class ScreenerMapper {
         if (doesAttributeExistOfType(map, FieldNames.IS_PUBLISHED, Boolean.class)){
             screener.setIsPublished((Boolean) map.get(FieldNames.IS_PUBLISHED));
         }
+        if (doesAttributeExistOfType(map, FieldNames.PUBLISHED_DMN_NAME, String.class)){
+            screener.setPublishedDmnName((String) map.get(FieldNames.PUBLISHED_DMN_NAME));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.PUBLISHED_DMN_NAMESPACE, String.class)){
+            screener.setPublishedDmnNameSpace((String) map.get(FieldNames.PUBLISHED_DMN_NAMESPACE));
+        }
 
         return screener;
-    }
-
-    public static Map<String, Object> fromScreener(Screener screener){
-        Map<String, Object> data = new HashMap<>();
-        if (screener.getScreenerName() != null){
-            data.put(FieldNames.SCREENER_NAME, screener.getScreenerName());
-        }
-        if (screener.isPublished() != null){
-            data.put(FieldNames.IS_PUBLISHED, screener.isPublished());
-        }
-        if (screener.getOrganizationName() != null){
-            data.put(FieldNames.ORGANIZATION_NAME, screener.getOrganizationName());
-        }
-        return data;
     }
 
     private static boolean doesAttributeExistOfType(Map<String, Object> map, String attributeName, Class<?> expectedType) {

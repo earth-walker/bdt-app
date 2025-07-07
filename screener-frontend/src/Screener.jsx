@@ -15,10 +15,8 @@ export default function Screener() {
   const submitForm = async (data) => {
     try {
       let results = await getDecisionResult(params.screenerId, data);
-      if (!Array.isArray(results)) {
-        results = [results];
-      }
       setResults(results);
+      console.log(results);
     } catch (err) {
       console.log(err);
     }

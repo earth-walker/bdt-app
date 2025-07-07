@@ -27,6 +27,24 @@ public class ScreenerMapper {
         if (doesAttributeExistOfType(map, FieldNames.IS_PUBLISHED, Boolean.class)){
             screener.setIsPublished((Boolean) map.get(FieldNames.IS_PUBLISHED));
         }
+        if (doesAttributeExistOfType(map, FieldNames.WORKING_DMN_NAME, String.class)){
+            screener.setWorkingDmnName((String) map.get(FieldNames.WORKING_DMN_NAME));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.WORKING_DMN_NAMESPACE, String.class)){
+            screener.setWorkingDmnNameSpace((String) map.get(FieldNames.WORKING_DMN_NAMESPACE));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.PUBLISHED_DMN_NAME, String.class)){
+            screener.setPublishedDmnName((String) map.get(FieldNames.PUBLISHED_DMN_NAME));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.PUBLISHED_DMN_NAMESPACE, String.class)){
+            screener.setPublishedDmnNameSpace((String) map.get(FieldNames.PUBLISHED_DMN_NAMESPACE));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.LAST_DMN_SAVE, String.class)){
+            screener.setLastDmnSave((String) map.get(FieldNames.LAST_DMN_SAVE));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.LAST_DMN_COMPILE, String.class)){
+            screener.setLastDmnCompile((String) map.get(FieldNames.LAST_DMN_COMPILE));
+        }
 
         return screener;
     }
@@ -48,6 +66,25 @@ public class ScreenerMapper {
         if (screener.getLastPublishDate() != null){
             data.put(FieldNames.LAST_PUBLISHED_DATE, screener.getLastPublishDate());
         }
+        if (screener.getWorkingDmnName() !=null){
+            data.put(FieldNames.WORKING_DMN_NAME, screener.getWorkingDmnName());
+        }
+        if (screener.getWorkingDmnNameSpace() !=null){
+            data.put(FieldNames.WORKING_DMN_NAMESPACE, screener.getWorkingDmnNameSpace());
+        }
+        if (screener.getPublishedDmnName() !=null){
+            data.put(FieldNames.PUBLISHED_DMN_NAME, screener.getPublishedDmnName());
+        }
+        if (screener.getPublishedDmnNameSpace() !=null){
+            data.put(FieldNames.PUBLISHED_DMN_NAMESPACE, screener.getPublishedDmnNameSpace());
+        }
+        if (screener.getLastDmnSave()!=null){
+            data.put(FieldNames.LAST_DMN_SAVE, screener.getLastDmnSave());
+        }
+        if (screener.getLastDmnCompile()!=null){
+            data.put(FieldNames.LAST_DMN_COMPILE, screener.getLastDmnCompile());
+        }
+
         return data;
     }
 

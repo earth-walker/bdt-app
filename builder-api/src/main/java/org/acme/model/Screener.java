@@ -10,6 +10,12 @@ public class Screener {
     private String screenerName;
     private String lastPublishDate;
     private String organizationName;
+    private String publishedDmnNameSpace;
+    private String workingDmnNameSpace;
+    private String publishedDmnName;
+    private String workingDmnName;
+    private String lastDmnSave;
+    private String lastDmnCompile;
 
     public Screener(Map<String, Object> model, boolean isPublished){
         this.formSchema = model;
@@ -87,4 +93,51 @@ public class Screener {
         return this.lastPublishDate;
     }
 
+    public String getPublishedDmnNameSpace(){
+        return this.publishedDmnNameSpace;
+    }
+
+    public String getPublishedDmnName(){
+        return this.publishedDmnName;
+    }
+
+    public void setPublishedDmnName(String name){
+        this.publishedDmnName = name;
+    }
+
+    public void setPublishedDmnNameSpace(String nameSpace){
+        this.publishedDmnNameSpace = nameSpace;
+    }
+
+    public String getLastDmnSave() {
+        return lastDmnSave;
+    }
+
+    public void setLastDmnSave(String lastDmnSave) {
+        this.lastDmnSave = lastDmnSave;
+    }
+
+    public String getLastDmnCompile() {
+        return lastDmnCompile;
+    }
+
+    public void setLastDmnCompile(String lastDmnCompile) {
+        this.lastDmnCompile = lastDmnCompile;
+    }
+
+    public String getWorkingDmnNameSpace() {
+        return workingDmnNameSpace;
+    }
+
+    public void setWorkingDmnNameSpace(String workingDmnNameSpace) {
+        this.workingDmnNameSpace = workingDmnNameSpace;
+    }
+
+    public String getWorkingDmnName() {
+        return workingDmnName;
+    }
+
+    public void setWorkingDmnName(String workingDmnName) {
+        this.workingDmnName = workingDmnName;
+    }
 }

@@ -13,8 +13,10 @@ import org.acme.dto.PublishScreenerRequest;
 import org.acme.dto.SaveDmnRequest;
 import org.acme.dto.SaveSchemaRequest;
 import org.acme.model.Screener;
-import org.acme.repository.ScreenerRepository;
-import org.acme.repository.utils.StorageUtils;
+import org.acme.persistence.ScreenerRepository;
+import org.acme.persistence.StorageService;
+import org.acme.service.DmnParser;
+import org.acme.service.DmnService;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -27,6 +29,12 @@ public class ScreenerResource {
 
     @Inject
     ScreenerRepository screenerRepository;
+
+    @Inject
+    StorageService storageService;
+    
+    @Inject
+    DmnService dmnService;
 
     @GET
     @Path("/screeners")
@@ -131,10 +139,8 @@ public class ScreenerResource {
                     .build();
         }
         try {
-
-
-            String filePath = StorageUtils.getScreenerWorkingFormSchemaPath(screenerId);
-            StorageUtils.writeJsonToStorage(filePath, schema);
+            String filePath = storageService.getScreenerWorkingFormSchemaPath(screenerId);
+            storageService.writeJsonToStorage(filePath, schema);
             Log.info("Saved form schema of screener " + screenerId + " to storage");
             return Response.ok().build();
         } catch (Exception e){
@@ -165,12 +171,16 @@ public class ScreenerResource {
                     .build();
         }
         try {
-
-            // perform authorization for screener
-
-            String filePath = StorageUtils.getScreenerWorkingDmnModelPath(screenerId);
-            StorageUtils.writeStringToStorage(filePath, dmnModel, "application/xml");
+            String filePath = storageService.getScreenerWorkingDmnModelPath(screenerId);
+            storageService.writeStringToStorage(filePath, dmnModel, "application/xml");
             Log.info("Saved DMN model of screener " + screenerId + " to storage");
+
+
+            Screener updateScreener = new Screener();
+            updateScreener.setId(screenerId);
+            updateScreener.setLastDmnSave(Instant.now().toString());
+            //update screener metadata
+            screenerRepository.updateScreener(updateScreener);
             return Response.ok().build();
         } catch (Exception e){
             Log.info(("Failed to save DMN model for screener " + screenerId));
@@ -194,14 +204,23 @@ public class ScreenerResource {
         if (!isUserAuthorizedToAccessScreener(userId, screenerId)) return Response.status(Response.Status.UNAUTHORIZED).build();
 
         try {
-            // Perf authorization to publish screener
+            //update published form schema
+            storageService.updatePublishedFormSchemaArtifact(screenerId);
+            Log.info("Updated Screener " + screenerId + " to published.");
+
+            //update published dmn model
+            String dmnXml = dmnService.compilePublishedDmnModel(screenerId);
+
             Screener updateScreener = new Screener();
             updateScreener.setId(screenerId);
             updateScreener.setIsPublished(true);
             updateScreener.setLastPublishDate(Instant.now().toString());
+            DmnParser dmnParser = new DmnParser(dmnXml);
+            updateScreener.setPublishedDmnName(dmnParser.getName());
+            updateScreener.setPublishedDmnNameSpace(dmnParser.getNameSpace());
+            //update screener metadata
             screenerRepository.updateScreener(updateScreener);
-            StorageUtils.updatePublishedScreenerArtifacts(screenerId);
-            Log.info("Updated Screener " + screenerId + " to published.");
+
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("screenerUrl", getScreenerUrl(screenerId));
             return Response.ok().entity(responseData).build();
@@ -230,7 +249,6 @@ public class ScreenerResource {
         if (!isUserAuthorizedToAccessScreener(userId, screenerId)) return Response.status(Response.Status.UNAUTHORIZED).build();
 
         try {
-            // Perf authorization to publish screener
             Screener updateScreener = new Screener();
             updateScreener.setId(screenerId);
             updateScreener.setIsPublished(false);
@@ -257,8 +275,6 @@ public class ScreenerResource {
         if (!isUserAuthorizedToAccessScreener(userId, screenerId)) return Response.status(Response.Status.UNAUTHORIZED).build();
 
         try {
-            //AUTHORIZE delete
-
             screenerRepository.deleteScreener(screenerId);
             return Response.ok().build();
         } catch (Exception e){
@@ -275,7 +291,6 @@ public class ScreenerResource {
         }
         return false;
     }
-
 
     private boolean isUserAuthorizedToAccessScreener(String userId, String screenerId) {
         Optional<Screener> screenerOptional = screenerRepository.getScreenerMetaDataOnly(screenerId);
