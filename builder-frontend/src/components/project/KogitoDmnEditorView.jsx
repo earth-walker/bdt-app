@@ -6,7 +6,7 @@ import {
   saveDmnModelToStorageDebounced,
   getSelectedProjectFromStorage,
 } from "../../storageUtils/storageUtils";
-import { saveDmnModel } from "../../api/api";
+import { saveDmnModel } from "../../api/screener";
 
 export default function KogitoDmnEditorView() {
   const [isUnsaved, setIsUnsaved] = createSignal("Not Dirty");
@@ -16,7 +16,7 @@ export default function KogitoDmnEditorView() {
   let timeoutId;
 
   async function loadUtilityModel() {
-    const res = await fetch("/dmn/utility.dmn");
+    const res = await fetch("/dmn/list-types.dmn");
     if (!res.ok) console.log("Failed to load utility.dmn");
     return await res.text();
   }
@@ -34,24 +34,24 @@ export default function KogitoDmnEditorView() {
   }
 
   const initializeEditor = async () => {
-    // const [utilityDmn, initialDmn] = await Promise.all([
-    //   loadUtilityModel(),
-    //   loadScreenerModel(),
-    // ]);
+    const [utilityDmn, initialDmn] = await Promise.all([
+      loadUtilityModel(),
+      loadScreenerModel(),
+    ]);
 
-    const [initialDmn] = await Promise.all([loadScreenerModel()]);
+    // const [initialDmn] = await Promise.all([loadScreenerModel()]);
 
     console.log(initialDmn);
     editor = DmnEditor.open({
       container: container,
       initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "screener.dmn",
       initialContent: Promise.resolve(initialDmn),
-      // resources: new Map([
-      //   [
-      //     "utility.dmn",
-      //     { contentType: "text", content: Promise.resolve(utilityDmn) },
-      //   ],
-      // ]),
+      resources: new Map([
+        [
+          "list-types.dmn",
+          { contentType: "text", content: Promise.resolve(utilityDmn) },
+        ],
+      ]),
       readOnly: false,
     });
 

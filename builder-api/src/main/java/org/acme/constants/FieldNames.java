@@ -24,4 +24,9 @@ public class FieldNames {
     public static final String ARTIFACT_ID = "artifact_id";
     public static final String VERSION = "version";
     public static final String STORAGE_LOCATION = "storage_location";
+    public static final String IMPORT_TYPE = "import_type";
+    public static final String NAMESPACE = "namespace";
+    public static final String MODEL_NAME = "name";
+    public static final String MODEL_DESCRIPTION = "description";
+    public static final String MODEL_SHORT_DESCRIPTION = "short_description";
 }

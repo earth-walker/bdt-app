@@ -19,6 +19,27 @@ public class FirestoreUtils {
 
     private static final Firestore db = FirestoreClient.getFirestore();
 
+    public static List<Map<String, Object>> getAllDocsInCollection(String collection){
+        try {
+            ApiFuture<QuerySnapshot> query = db.collection(collection)
+                    .get();
+            List<QueryDocumentSnapshot> documents;
+            documents = query.get().getDocuments();
+
+            return documents.stream()
+                    .map(doc -> {
+                        Map<String, Object> data = doc.getData();
+                        data.put("id", doc.getId());
+                        return data;
+                    })
+                    .toList();
+
+        }catch(Exception e){
+            Log.error("Error fetching documents from firestore: ", e);
+            return new ArrayList<>();
+        }
+    }
+
     public static List<Map<String, Object>> getFirestoreDocsByField(String collection, String field, String value) {
         try {
             ApiFuture<QuerySnapshot> query = db.collection(collection)
