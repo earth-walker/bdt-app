@@ -5,7 +5,7 @@
     xmlns:kie="http://www.drools.org/kie/dmn/1.2"
     xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
     xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-    xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_B60D6BB3-53A3-43EB-B0F2-4B9C57EC8618" name="utility" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_9A2F2865-CC81-4D18-9257-FDDC1BC4B5CC">
+    xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_B60D6BB3-53A3-43EB-B0F2-4B9C57EC8618" name="list-types" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_9A2F2865-CC81-4D18-9257-FDDC1BC4B5CC">
     <dmn:description>BKMs and types that may be useful in any model.</dmn:description>
     <dmn:extensionElements/>
     <dmn:itemDefinition id="_785E9153-6BD6-4DFA-83CD-CDF3D5DCB747" name="AnyList" isCollection="true">

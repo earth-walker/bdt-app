@@ -3,7 +3,7 @@ import {
   getFormSchemaFromStorage,
   getSelectedProjectFromStorage,
 } from "../../storageUtils/storageUtils";
-import { submitForm } from "../../api/api";
+import { submitForm } from "../../api/screener";
 import FormRenderer from "./FormRenderer";
 import Results from "./Results";
 

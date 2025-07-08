@@ -6,6 +6,11 @@ public class DmnModel {
     private String artifactId;
     private String version;
     private String storageLocation;
+    private String importType;
+    private String namespace;
+    private String description;
+    private String shortDescription;
+    private String name;
 
     public String getGroupId() {
         return groupId;
@@ -45,5 +50,45 @@ public class DmnModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getImportType() {
+        return importType;
+    }
+
+    public void setImportType(String importType) {
+        this.importType = importType;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

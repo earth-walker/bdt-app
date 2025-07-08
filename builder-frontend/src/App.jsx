@@ -1,6 +1,6 @@
 import "./App.css";
 import { createSignal, onMount, createEffect } from "solid-js";
-import { createNewScreener, fetchProject } from "./api/api";
+import { createNewScreener, fetchProject } from "./api/screener";
 import {
   getSelectedProjectFromStorage,
   clearSessionStorage,
@@ -82,14 +82,6 @@ function App() {
   }
 
   return <>{content()}</>;
-  // return (
-  //   <>
-  //     <div className="h-screen flex flex-col">
-  //       <div className="h-30"></div>
-  //       <KogitoDmnEditorView></KogitoDmnEditorView>
-  //     </div>
-  //   </>
-  // );
 }
 
 export default App;
