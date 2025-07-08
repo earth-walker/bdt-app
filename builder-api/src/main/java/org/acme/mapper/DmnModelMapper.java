@@ -19,10 +19,27 @@ public class DmnModelMapper {
         if (doesAttributeExistOfType(map, FieldNames.ARTIFACT_ID, String.class)) {
             dmnModel.setArtifactId((String) map.get(FieldNames.ARTIFACT_ID));
         }
+        if (doesAttributeExistOfType(map, FieldNames.VERSION, String.class)){
+            dmnModel.setVersion((String) map.get(FieldNames.VERSION));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.IMPORT_TYPE, String.class)){
+            dmnModel.setImportType((String) map.get(FieldNames.IMPORT_TYPE));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.NAMESPACE, String.class)){
+            dmnModel.setNamespace((String) map.get(FieldNames.NAMESPACE));
+        }
         if (doesAttributeExistOfType(map, FieldNames.STORAGE_LOCATION, String.class)) {
             dmnModel.setStorageLocation((String) map.get(FieldNames.STORAGE_LOCATION));
         }
-
+        if (doesAttributeExistOfType(map, FieldNames.MODEL_DESCRIPTION, String.class)) {
+            dmnModel.setDescription((String) map.get(FieldNames.MODEL_DESCRIPTION));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.MODEL_SHORT_DESCRIPTION, String.class)) {
+            dmnModel.setShortDescription((String) map.get(FieldNames.MODEL_SHORT_DESCRIPTION));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.MODEL_NAME, String.class)) {
+            dmnModel.setName((String) map.get(FieldNames.MODEL_NAME));
+        }
         return dmnModel;
     }
 

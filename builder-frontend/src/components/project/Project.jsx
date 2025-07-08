@@ -9,6 +9,8 @@ import FormEditorView from "./FormEditorView";
 import Preview from "./Preview";
 import Publish from "./Publish";
 import KogitoDmnEditorView from "./KogitoDmnEditorView";
+import ImportModels from "./ImportModels";
+import { act } from "react";
 
 function Project({ selectedProject, setSelectedProject, clearUserState }) {
   const [activeTab, setActiveTab] = createSignal("DMN Editor");
@@ -36,7 +38,13 @@ function Project({ selectedProject, setSelectedProject, clearUserState }) {
           {" "}
           {selectedProject().screenerName}
         </span>
-        {["DMN Editor", "Form Editor", "Preview", "Publish"].map((tab) => (
+        {[
+          "DMN Editor",
+          "Import Models",
+          "Form Editor",
+          "Preview",
+          "Publish",
+        ].map((tab) => (
           <button
             class={`px-4 py-2 -mb-px text-sm font-medium border-b-2 transition-colors ${
               activeTab() === tab
@@ -54,6 +62,7 @@ function Project({ selectedProject, setSelectedProject, clearUserState }) {
       {activeTab() == "DMN Editor" && (
         <KogitoDmnEditorView></KogitoDmnEditorView>
       )}
+      {activeTab() == "Import Models" && <ImportModels></ImportModels>}
       {activeTab() == "Preview" && <Preview></Preview>}
       {activeTab() == "Publish" && <Publish></Publish>}
     </div>

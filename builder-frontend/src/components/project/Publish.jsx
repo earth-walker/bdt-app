@@ -3,7 +3,7 @@ import {
   getSelectedProjectFromStorage,
   saveScreenerDataToStorage,
 } from "../../storageUtils/storageUtils";
-import { publishScreener, fetchProject } from "../../api/api";
+import { publishScreener, fetchProject } from "../../api/screener";
 const screenerBaseUrl = import.meta.env.VITE_SCREENER_BASE_URL;
 export default function Publish() {
   const [isLoading, setIsLoading] = createSignal(false);

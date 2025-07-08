@@ -1,6 +1,10 @@
 import { For, createResource, createSignal } from "solid-js";
 import Header from "../Header";
-import { fetchProjects, updateScreener, deleteScreener } from "../../api/api";
+import {
+  fetchProjects,
+  updateScreener,
+  deleteScreener,
+} from "../../api/screener";
 import NewScreenerForm from "./NewScreenerForm";
 import MenuIcon from "../icon/MenuIcon";
 import EditScreenerForm from "./EditScreenerForm";
