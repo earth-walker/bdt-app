@@ -33,9 +33,6 @@ export default function Results({ results }) {
             </ul>
           </div>
         )}
-        <div class="my-2">
-          <EligibilityResults />
-        </div>
       </div>
     </>
   );

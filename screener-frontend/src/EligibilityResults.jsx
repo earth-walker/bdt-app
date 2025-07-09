@@ -5,7 +5,7 @@ export default function EligibilityResults() {
   const [testResults, setTestResults] = createSignal({});
   setTestResults(testData);
   return (
-    <>
+    <div class="my-2">
       <h2 class="text-gray-600 text-sm font-bold">Eligibility Results</h2>
       <Index each={Object.keys(testResults()["benefits"])}>
         {(benefitName, index) => (
@@ -59,6 +59,6 @@ export default function EligibilityResults() {
           </>
         )}
       </Index>
-    </>
+    </div>
   );
 }
