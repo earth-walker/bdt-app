@@ -56,4 +56,8 @@ export default {
       },
     },
   },
+  branding: {
+    orgName: "Hackerzone",
+    authorInfo: "Created by hackerman69",
+  },
 };
