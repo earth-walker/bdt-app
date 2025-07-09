@@ -1,7 +1,7 @@
-export default function Footer() {
+export default function Footer({ authorInfo }) {
   return (
     <footer class="mx-8 my-8 text-center">
-      <p>Organization Name</p>
+      <p>{authorInfo}</p>
     </footer>
   );
 }
