@@ -57,7 +57,7 @@ export default {
     },
   },
   branding: {
-    orgName: "Hackerzone",
-    authorInfo: "Created by hackerman69",
+    orgName: "Organization Name",
+    authorInfo: "Created by Org Name",
   },
 };
