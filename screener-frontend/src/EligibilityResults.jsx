@@ -1,4 +1,4 @@
-import { createSignal, Show, Index } from "solid-js";
+import { createSignal, Show, Index, Switch, Match } from "solid-js";
 import testData from "./testData.js";
 
 export default function EligibilityResults() {
@@ -10,25 +10,36 @@ export default function EligibilityResults() {
       <Index each={Object.keys(testResults()["benefits"])}>
         {(benefitName, index) => (
           <div class="border-gray-600 border p-4 my-4">
-            <h3 class="font-bold mb-2">
-              <span>{benefitName()}</span>
-              <span>
-                {" "}
-                -{" "}
-                <Show
-                  when={
-                    testResults()["benefits"][benefitName()]["eligibility"][
-                      "result"
-                    ] !== null
-                  }
-                  fallback={"null"}
-                >
-                  {testResults()["benefits"][benefitName()]["eligibility"][
+            <Switch>
+              <Match
+                when={
+                  testResults()["benefits"][benefitName()]["eligibility"][
                     "result"
-                  ].toString()}
-                </Show>
-              </span>
-            </h3>
+                  ] === true
+                }
+              >
+                <p class="mb-2 text-green-500">Eligible</p>
+              </Match>
+              <Match
+                when={
+                  testResults()["benefits"][benefitName()]["eligibility"][
+                    "result"
+                  ] === null
+                }
+              >
+                <p class="mb-2 text-yellow-500">Need more information</p>
+              </Match>
+              <Match
+                when={
+                  testResults()["benefits"][benefitName()]["eligibility"][
+                    "result"
+                  ] === false
+                }
+              >
+                <p class="mb-2 text-red-500">Ineligible</p>
+              </Match>
+            </Switch>
+            <h3 class="font-bold mb-2">{benefitName()}</h3>
             <div class="mb-2">
               <Index
                 each={Object.keys(
@@ -38,23 +49,38 @@ export default function EligibilityResults() {
                 )}
               >
                 {(checkName, index) => (
-                  <>
-                    <p>
-                      {checkName()} -{" "}
-                      <Show
+                  <p>
+                    <Switch>
+                      <Match
                         when={
                           testResults()["benefits"][benefitName()][
                             "eligibility"
-                          ]["checks"][checkName()] !== null
+                          ]["checks"][checkName()] === true
                         }
-                        fallback={"null"}
                       >
-                        {testResults()["benefits"][benefitName()][
-                          "eligibility"
-                        ]["checks"][checkName()].toString()}
-                      </Show>
-                    </p>
-                  </>
+                        <span class="mb-2 mr-1 text-green-500">O</span>
+                      </Match>
+                      <Match
+                        when={
+                          testResults()["benefits"][benefitName()][
+                            "eligibility"
+                          ]["checks"][checkName()] === null
+                        }
+                      >
+                        <span class="mb-2 mr-1 text-yellow-500">O</span>
+                      </Match>
+                      <Match
+                        when={
+                          testResults()["benefits"][benefitName()][
+                            "eligibility"
+                          ]["checks"][checkName()] === false
+                        }
+                      >
+                        <span class="mb-2 mr-1 text-red-500">O</span>
+                      </Match>
+                    </Switch>
+                    <span>{checkName()}</span>
+                  </p>
                 )}
               </Index>
             </div>

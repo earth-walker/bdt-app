@@ -2,15 +2,15 @@ export default {
   benefits: {
     phlLoop: {
       eligibility: {
-        result: false,
+        result: true,
         checks: {
-          tenOrMoreYearsOwnerOccupant: null,
-          notEnrolledInPhlLoop: null,
-          noTenYearTaxAbatement: null,
-          loopTaxAssessmentEligible: null,
-          phillyOwnerOccupantHomeowner: false,
-          underPreviousAnnualGrossIncome: null,
-          notTaxDelinquentOrIsEnrolledInOopaEligible: null,
+          tenOrMoreYearsOwnerOccupant: true,
+          notEnrolledInPhlLoop: true,
+          noTenYearTaxAbatement: true,
+          loopTaxAssessmentEligible: true,
+          phillyOwnerOccupantHomeowner: true,
+          underPreviousAnnualGrossIncome: true,
+          notTaxDelinquentOrIsEnrolledInOopaEligible: true,
         },
       },
       info: "The Longtime Owner Occupants Program (LOOP) is a Real Estate Tax relief program for eligible homeowners whose property assessments increased by at least 50% from last year or increased by at least 75% in the last five years.",
@@ -19,11 +19,11 @@ export default {
     },
     phlSeniorCitizenTaxFreeze: {
       eligibility: {
-        result: false,
+        result: null,
         checks: {
-          notEnrolledInPhlSeniorCitizenTaxFreeze: null,
+          notEnrolledInPhlSeniorCitizenTaxFreeze: true,
           meetsPhlSeniorCitizenTaxFreezeAgeRequirements: null,
-          phillyOwnerOccupantHomeowner: false,
+          phillyOwnerOccupantHomeowner: true,
           underMaritalStatusBasedCurrentMonthlyGrossIncome: null,
         },
       },
@@ -61,9 +61,9 @@ export default {
       eligibility: {
         result: false,
         checks: {
-          noTenYearTaxAbatement: null,
+          noTenYearTaxAbatement: false,
           phillyOwnerOccupantHomeowner: false,
-          notEnrolledInPhlHomesteadExemption: null,
+          notEnrolledInPhlHomesteadExemption: false,
         },
       },
       info: "Quo qui minus nisi facilis dolorem ullam ex. Perspiciatis expedita doloremque ratione esse non iusto. Eos qui dolore quisquam ipsum vel. Dolores dignissimos quibusdam qui tempora et autem dolore. Accusantium saepe praesentium et dignissimos veniam perspiciatis magni quam.",
