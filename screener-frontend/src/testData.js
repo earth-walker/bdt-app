@@ -13,6 +13,9 @@ export default {
           notTaxDelinquentOrIsEnrolledInOopaEligible: null,
         },
       },
+      info: "The Longtime Owner Occupants Program (LOOP) is a Real Estate Tax relief program for eligible homeowners whose property assessments increased by at least 50% from last year or increased by at least 75% in the last five years.",
+      appLink:
+        "https://www.phila.gov/documents/longtime-owner-occupants-program-loop-forms/",
     },
     phlSeniorCitizenTaxFreeze: {
       eligibility: {
@@ -24,6 +27,9 @@ export default {
           underMaritalStatusBasedCurrentMonthlyGrossIncome: null,
         },
       },
+      info: "Quo qui minus nisi facilis dolorem ullam ex. Perspiciatis expedita doloremque ratione esse non iusto. Eos qui dolore quisquam ipsum vel. Dolores dignissimos quibusdam qui tempora et autem dolore. Accusantium saepe praesentium et dignissimos veniam perspiciatis magni quam.",
+      appLink:
+        "https://www.phila.gov/documents/longtime-owner-occupants-program-loop-forms/",
     },
     phlLowIncomeTaxFreeze: {
       eligibility: {
@@ -34,6 +40,9 @@ export default {
           underMaritalStatusBasedCurrentMonthlyGrossIncome: null,
         },
       },
+      info: "Quo qui minus nisi facilis dolorem ullam ex. Perspiciatis expedita doloremque ratione esse non iusto. Eos qui dolore quisquam ipsum vel. Dolores dignissimos quibusdam qui tempora et autem dolore. Accusantium saepe praesentium et dignissimos veniam perspiciatis magni quam.",
+      appLink:
+        "https://www.phila.gov/documents/longtime-owner-occupants-program-loop-forms/",
     },
     phlOopa: {
       eligibility: {
@@ -44,6 +53,9 @@ export default {
           notEnrolledInPhlOopa: null,
         },
       },
+      info: "Quo qui minus nisi facilis dolorem ullam ex. Perspiciatis expedita doloremque ratione esse non iusto. Eos qui dolore quisquam ipsum vel. Dolores dignissimos quibusdam qui tempora et autem dolore. Accusantium saepe praesentium et dignissimos veniam perspiciatis magni quam.",
+      appLink:
+        "https://www.phila.gov/documents/longtime-owner-occupants-program-loop-forms/",
     },
     phlHomesteadExemption: {
       eligibility: {
@@ -54,6 +66,9 @@ export default {
           notEnrolledInPhlHomesteadExemption: null,
         },
       },
+      info: "Quo qui minus nisi facilis dolorem ullam ex. Perspiciatis expedita doloremque ratione esse non iusto. Eos qui dolore quisquam ipsum vel. Dolores dignissimos quibusdam qui tempora et autem dolore. Accusantium saepe praesentium et dignissimos veniam perspiciatis magni quam.",
+      appLink:
+        "https://www.phila.gov/documents/longtime-owner-occupants-program-loop-forms/",
     },
   },
   branding: {

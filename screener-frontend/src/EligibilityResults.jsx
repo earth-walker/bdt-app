@@ -6,11 +6,11 @@ export default function EligibilityResults() {
   setTestResults(testData);
   return (
     <div class="my-2">
-      <h2 class="text-gray-600 text-sm font-bold">Eligibility Results</h2>
+      <h2 class="text-gray-600 font-bold">Eligibility Results</h2>
       <Index each={Object.keys(testResults()["benefits"])}>
         {(benefitName, index) => (
-          <>
-            <h3 class="font-bold mt-4">
+          <div class="border-gray-600 border p-4 my-4">
+            <h3 class="font-bold mb-2">
               <span>{benefitName()}</span>
               <span>
                 {" "}
@@ -29,34 +29,46 @@ export default function EligibilityResults() {
                 </Show>
               </span>
             </h3>
-            <Index
-              each={Object.keys(
-                testResults()["benefits"][benefitName()]["eligibility"][
-                  "checks"
-                ]
-              )}
+            <div class="mb-2">
+              <Index
+                each={Object.keys(
+                  testResults()["benefits"][benefitName()]["eligibility"][
+                    "checks"
+                  ]
+                )}
+              >
+                {(checkName, index) => (
+                  <>
+                    <p>
+                      {checkName()} -{" "}
+                      <Show
+                        when={
+                          testResults()["benefits"][benefitName()][
+                            "eligibility"
+                          ]["checks"][checkName()] !== null
+                        }
+                        fallback={"null"}
+                      >
+                        {testResults()["benefits"][benefitName()][
+                          "eligibility"
+                        ]["checks"][checkName()].toString()}
+                      </Show>
+                    </p>
+                  </>
+                )}
+              </Index>
+            </div>
+            <p class="mb-2">
+              {testResults()["benefits"][benefitName()]["info"]}
+            </p>
+            <a
+              href={testResults()["benefits"][benefitName()]["appLink"]}
+              target="_blank"
+              class="text-sky-600 underline"
             >
-              {(checkName, index) => (
-                <>
-                  <p>
-                    {checkName()} -{" "}
-                    <Show
-                      when={
-                        testResults()["benefits"][benefitName()]["eligibility"][
-                          "checks"
-                        ][checkName()] !== null
-                      }
-                      fallback={"null"}
-                    >
-                      {testResults()["benefits"][benefitName()]["eligibility"][
-                        "checks"
-                      ][checkName()].toString()}
-                    </Show>
-                  </p>
-                </>
-              )}
-            </Index>
-          </>
+              Apply Now
+            </a>
+          </div>
         )}
       </Index>
     </div>
