@@ -48,7 +48,9 @@ export default function EligibilityResults() {
                 </p>
               </Match>
             </Switch>
-            <h3 class="font-bold mb-2 text-2xl">{benefitName()}</h3>
+            <h3 class="font-bold mb-2 text-2xl">
+              {testResults()["benefits"][benefitName()]["name"]}
+            </h3>
             <div class="my-4">
               <Index
                 each={Object.keys(
@@ -64,7 +66,7 @@ export default function EligibilityResults() {
                         when={
                           testResults()["benefits"][benefitName()][
                             "eligibility"
-                          ]["checks"][checkName()] === true
+                          ]["checks"][checkName()]["result"] === true
                         }
                       >
                         <img src={checkIcon} alt="" class="inline w-5 mr-2" />
@@ -73,7 +75,7 @@ export default function EligibilityResults() {
                         when={
                           testResults()["benefits"][benefitName()][
                             "eligibility"
-                          ]["checks"][checkName()] === null
+                          ]["checks"][checkName()]["result"] === null
                         }
                       >
                         <img
@@ -86,13 +88,19 @@ export default function EligibilityResults() {
                         when={
                           testResults()["benefits"][benefitName()][
                             "eligibility"
-                          ]["checks"][checkName()] === false
+                          ]["checks"][checkName()]["result"] === false
                         }
                       >
                         <img src={xIcon} alt="" class="inline w-5 mr-2" />
                       </Match>
                     </Switch>
-                    <span>{checkName()}</span>
+                    <span>
+                      {
+                        testResults()["benefits"][benefitName()]["eligibility"][
+                          "checks"
+                        ][checkName()]["name"]
+                      }
+                    </span>
                   </p>
                 )}
               </Index>
