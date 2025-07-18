@@ -1,4 +1,4 @@
-package org.acme.model;
+package org.acme.model.domain;
 import java.util.Map;
 
 public class Screener {

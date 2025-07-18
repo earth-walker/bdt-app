@@ -1,7 +1,7 @@
 package org.acme.mapper;
 
 import org.acme.constants.FieldNames;
-import org.acme.model.Screener;
+import org.acme.model.domain.Screener;
 
 import java.util.HashMap;
 import java.util.Map;

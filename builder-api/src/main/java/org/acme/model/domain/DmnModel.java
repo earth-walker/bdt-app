@@ -1,4 +1,4 @@
-package org.acme.model;
+package org.acme.model.domain;
 
 public class DmnModel {
     private String id;

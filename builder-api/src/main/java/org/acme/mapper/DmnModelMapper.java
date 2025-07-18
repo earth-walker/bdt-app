@@ -1,7 +1,7 @@
 package org.acme.mapper;
 
 import org.acme.constants.FieldNames;
-import org.acme.model.DmnModel;
+import org.acme.model.domain.DmnModel;
 import java.util.HashMap;
 import java.util.Map;
 
