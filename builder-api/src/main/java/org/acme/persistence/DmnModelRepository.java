@@ -1,6 +1,6 @@
 package org.acme.persistence;
 
-import org.acme.model.DmnModel;
+import org.acme.model.domain.DmnModel;
 
 import java.util.List;
 

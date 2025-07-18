@@ -4,7 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.acme.model.Screener;
+import org.acme.model.domain.Screener;
 import org.acme.persistence.ScreenerRepository;
 import org.acme.persistence.StorageService;
 import org.acme.service.DmnParser;
