@@ -5,7 +5,7 @@ import jakarta.inject.Inject;
 import org.acme.constants.CollectionNames;
 import org.acme.constants.FieldNames;
 import org.acme.mapper.ScreenerMapper;
-import org.acme.model.Screener;
+import org.acme.model.domain.Screener;
 
 import java.util.List;
 import java.util.Map;

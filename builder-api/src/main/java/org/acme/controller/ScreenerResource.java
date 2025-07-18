@@ -9,12 +9,14 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.auth.AuthUtils;
-import org.acme.dto.PublishScreenerRequest;
-import org.acme.dto.SaveDmnRequest;
-import org.acme.dto.SaveSchemaRequest;
-import org.acme.model.Screener;
+import org.acme.model.dto.DmnImportRequest;
+import org.acme.model.dto.PublishScreenerRequest;
+import org.acme.model.dto.SaveDmnRequest;
+import org.acme.model.dto.SaveSchemaRequest;
+import org.acme.model.domain.Screener;
 import org.acme.persistence.ScreenerRepository;
 import org.acme.persistence.StorageService;
+import org.acme.service.DmnImportService;
 import org.acme.service.DmnParser;
 import org.acme.service.DmnService;
 
@@ -35,6 +37,9 @@ public class ScreenerResource {
     
     @Inject
     DmnService dmnService;
+
+    @Inject
+    DmnImportService dmnImportService;
 
     @GET
     @Path("/screeners")
@@ -303,5 +308,16 @@ public class ScreenerResource {
             return true;
         }
         return false;
+    }
+
+    // This Endpoint allows users to import a public DMN model into their project.
+    // This makes the dmn model elements available in the dmn editor as well as includes the dmn model when the dmn is
+    // compiled
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/import-dmn")
+    public Response importDmn(@Context ContainerRequestContext requestContext, DmnImportRequest request){
+        String userId = AuthUtils.getUserId(requestContext);
+        return dmnImportService.addImport(request, userId);
     }
 }

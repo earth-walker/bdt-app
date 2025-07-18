@@ -4,7 +4,7 @@ import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
-import org.acme.model.Screener;
+import org.acme.model.domain.Screener;
 import org.acme.persistence.StorageService;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;

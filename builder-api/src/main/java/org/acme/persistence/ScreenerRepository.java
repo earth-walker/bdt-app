@@ -1,6 +1,6 @@
 package org.acme.persistence;
 
-import org.acme.model.Screener;
+import org.acme.model.domain.Screener;
 
 import java.util.List;
 import java.util.Optional;

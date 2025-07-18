@@ -9,8 +9,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.auth.AuthUtils;
-import org.acme.model.DmnModel;
-import org.acme.model.Screener;
+import org.acme.model.domain.DmnModel;
 import org.acme.persistence.DmnModelRepository;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package org.acme.persistence;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.acme.constants.CollectionNames;
 import org.acme.mapper.DmnModelMapper;
-import org.acme.model.DmnModel;
+import org.acme.model.domain.DmnModel;
 
 import java.util.List;
 import java.util.Map;
