@@ -1,5 +1,6 @@
 package org.acme.persistence;
 
+import org.acme.model.domain.DmnModel;
 import org.acme.model.domain.Screener;
 
 import java.util.List;
@@ -19,4 +20,7 @@ public interface ScreenerRepository {
 
     public void deleteScreener(String screenerId) throws Exception;
 
+    public void addDmnDependency(String screenerId, DmnModel dmnModel) throws Exception;
+
+    public void deleteDmnDependency(String screenerId, String groupId, String artifactId, String version) throws Exception;
 }

@@ -18,6 +18,7 @@ public class FieldNames {
     public static final String PUBLISHED_DMN_NAMESPACE = "published_dmn_namespace";
     public static final String LAST_DMN_SAVE = "last_dmn_save";
     public static final String LAST_DMN_COMPILE = "last_dmn_compile";
+    public static final String DEPENDENCIES = "dependencies";
 
     // DmnModel Database fields
     public static final String GROUP_ID = "group_id";

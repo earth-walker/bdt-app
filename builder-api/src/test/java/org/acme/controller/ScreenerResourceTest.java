@@ -6,12 +6,9 @@ import org.acme.persistence.ScreenerRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Mockito.*;
-import org.mockito.junit.MockitoRule;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.acme.service.DmnImportService;
+import org.acme.service.DmnDependencyService;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Optional;
@@ -27,7 +24,7 @@ public class ScreenerResourceTest {
     ScreenerRepository screenerRepository;
 
     @InjectMocks
-    DmnImportService importService = new DmnImportService();
+    DmnDependencyService importService = new DmnDependencyService();
 
     private final String TEST_USER_ID = "TEST_USER_ID";
     private final String TEST_SCREENER_ID = "TEST_SCREENER_ID";
@@ -36,7 +33,7 @@ public class ScreenerResourceTest {
     void test_whenMissingScreenerId_addImport_returnsStatus400(){
         DmnImportRequest request = getTestRequest();
         request.screenerId = null;
-        Response response = importService.addImport(request, TEST_USER_ID);
+        Response response = importService.addDependency(request, TEST_USER_ID);
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
@@ -44,7 +41,7 @@ public class ScreenerResourceTest {
     void test_whenMissingGroupId_addImport_returnsStatus400(){
         DmnImportRequest request = getTestRequest();
         request.groupId = null;
-        Response response = importService.addImport(request, TEST_USER_ID);
+        Response response = importService.addDependency(request, TEST_USER_ID);
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
@@ -52,7 +49,7 @@ public class ScreenerResourceTest {
     void test_whenMissingArtifactId_addImport_returnsStatus400(){
         DmnImportRequest request = getTestRequest();
         request.artifactId = null;
-        Response response = importService.addImport(request, TEST_USER_ID);
+        Response response = importService.addDependency(request, TEST_USER_ID);
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
@@ -60,14 +57,14 @@ public class ScreenerResourceTest {
     void test_whenMissingVersion_addImport_returnsStatus400(){
         DmnImportRequest request = getTestRequest();
         request.version = null;
-        Response response = importService.addImport(request, TEST_USER_ID);
+        Response response = importService.addDependency(request, TEST_USER_ID);
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Test
     void test_whenMissingUserId_addImport_resturnsStatus401(){
         DmnImportRequest request = getTestRequest();
-        Response response = importService.addImport(request, null);
+        Response response = importService.addDependency(request, null);
         assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
     }
 
@@ -76,7 +73,7 @@ public class ScreenerResourceTest {
         DmnImportRequest request = getTestRequest();
         Screener screener = getTestScreener();
         when(screenerRepository.getScreenerMetaDataOnly(eq(TEST_SCREENER_ID))).thenReturn(Optional.of(screener));
-        Response response = importService.addImport(request, TEST_USER_ID);
+        Response response = importService.addDependency(request, TEST_USER_ID);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
