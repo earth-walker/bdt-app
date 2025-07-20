@@ -8,7 +8,7 @@ import org.acme.model.domain.Screener;
 import org.acme.persistence.ScreenerRepository;
 import org.acme.persistence.StorageService;
 import org.acme.service.DmnParser;
-import org.acme.service.DmnService;
+import org.acme.service.DmnEvaluationService;
 
 import java.io.InputStream;
 import java.time.Instant;
@@ -24,7 +24,7 @@ public class DecisionResource {
     StorageService storageService;
 
     @Inject
-    DmnService dmnService;
+    DmnEvaluationService dmnEvaluationService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -56,7 +56,7 @@ public class DecisionResource {
         try {
         if (screener.getLastDmnCompile() == null || Instant.parse(screener.getLastDmnSave()).isAfter(Instant.parse(screener.getLastDmnCompile()))){
             //compile working dmn
-            String dmnXml = dmnService.compileWorkingDmnModel(screenerId);
+            String dmnXml = dmnEvaluationService.compileWorkingDmnModel(screenerId);
             updateScreenerLastCompileTime(screenerId, dmnXml);
         }
 
@@ -67,7 +67,7 @@ public class DecisionResource {
             throw new NotFoundException();
         }
 
-        result = dmnService.evaluateDecision(screener, inputData);
+        result = dmnEvaluationService.evaluateDecision(screener, inputData);
 
         } catch (Exception e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
