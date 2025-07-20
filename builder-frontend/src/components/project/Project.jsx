@@ -10,9 +10,13 @@ import Preview from "./Preview";
 import Publish from "./Publish";
 import KogitoDmnEditorView from "./KogitoDmnEditorView";
 import ImportModels from "./ImportModels";
-import { act } from "react";
 
-function Project({ selectedProject, setSelectedProject, clearUserState }) {
+function Project({
+  selectedProject,
+  setSelectedProject,
+  clearUserState,
+  fetchAndCacheProject,
+}) {
   const [activeTab, setActiveTab] = createSignal("DMN Editor");
 
   onMount(() => {
@@ -57,12 +61,17 @@ function Project({ selectedProject, setSelectedProject, clearUserState }) {
           </button>
         ))}
       </div>
-
       {activeTab() == "Form Editor" && <FormEditorView></FormEditorView>}
       {activeTab() == "DMN Editor" && (
         <KogitoDmnEditorView></KogitoDmnEditorView>
       )}
-      {activeTab() == "Import Models" && <ImportModels></ImportModels>}
+      {activeTab() == "Import Models" && (
+        <ImportModels
+          screener={selectedProject}
+          dependencies={selectedProject().dependencies}
+          fetchAndCacheProject={fetchAndCacheProject}
+        ></ImportModels>
+      )}
       {activeTab() == "Preview" && <Preview></Preview>}
       {activeTab() == "Publish" && <Publish></Publish>}
     </div>

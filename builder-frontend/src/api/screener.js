@@ -204,3 +204,30 @@ export const publishScreener = async (screenerId) => {
     throw error;
   }
 };
+
+export const addDependency = async (screenerId, dependency) => {
+  const url = apiUrl + "/dependency";
+  console.log({ screenerId });
+  try {
+    const response = await authFetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        screenerId: screenerId,
+        groupId: dependency.groupId,
+        artifactId: dependency.artifactId,
+        version: dependency.version,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Model import failed with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error adding dependency:", error);
+    throw error;
+  }
+};
