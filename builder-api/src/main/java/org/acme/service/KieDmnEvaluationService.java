@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 
 @ApplicationScoped
-public class KieDmnService implements DmnService {
+public class KieDmnEvaluationService implements DmnEvaluationService {
 
     @Inject
     private StorageService storageService;
