@@ -14,22 +14,21 @@ import {
   GoogleAuthProvider,
   signInWithRedirect,
 } from "firebase/auth";
-import { clearSessionStorage } from "../storageUtils/storageUtils";
 import { auth } from "../firebase/firebase";
 
 const AuthContext = createContext();
 const googleProvider = new GoogleAuthProvider();
 
 export function AuthProvider(props) {
-  const [user, setUser] = createSignal(null);
-  const [loading, setLoading] = createSignal(true);
+  const [user, setUser] = createSignal("loading");
+  const [isAuthLoading, setIsAuthLoading] = createSignal(true);
   let unsubscribe;
 
   onMount(() => {
     unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setIsAuthLoading(true);
       setUser(firebaseUser);
-      clearSessionStorage();
-      setLoading(false);
+      setIsAuthLoading(false);
     });
   });
 
@@ -38,6 +37,7 @@ export function AuthProvider(props) {
   });
 
   const login = async (email, password) => {
+    console.log("Loging in");
     return signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -59,7 +59,7 @@ export function AuthProvider(props) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, loginWithGoogle, logout }}
+      value={{ user, isAuthLoading, login, register, loginWithGoogle, logout }}
     >
       {props.children}
     </AuthContext.Provider>

@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.mapper.DmnModelMapper;
 import org.acme.model.domain.DmnModel;
+import org.acme.model.dto.Dependency;
 import org.acme.model.dto.DmnModelSummary;
 import org.acme.persistence.DmnModelRepository;
 import org.acme.persistence.StorageService;
@@ -51,7 +52,13 @@ public class ModelLibraryService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        return Response.ok().entity(xmlOpt.get()).build();
+        Dependency dependency = new Dependency();
+        dependency.groupId = groupId;
+        dependency.artifactId = artifactId;
+        dependency.version = version;
+        dependency.xml = xmlOpt.get();
+
+        return Response.ok().entity(dependency).build();
     }
 
     // validate Ids coming from URL to avoid injection attacks

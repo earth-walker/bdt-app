@@ -1,56 +1,76 @@
 import * as DmnEditor from "@kogito-tooling/kie-editors-standalone/dist/dmn";
 import { createSignal, onCleanup, onMount } from "solid-js";
-import { debounce } from "lodash";
-import {
-  getDmnModelFromStorage,
-  saveDmnModelToStorageDebounced,
-  getSelectedProjectFromStorage,
-} from "../../storageUtils/storageUtils";
+import { useParams } from "@solidjs/router";
 import { saveDmnModel } from "../../api/screener";
 
-export default function KogitoDmnEditorView() {
+export default function KogitoDmnEditorView({
+  dmnModel,
+  setDmnModel,
+  projectDependencies,
+}) {
   const [isUnsaved, setIsUnsaved] = createSignal("Not Dirty");
   const [isSaving, setIsSaving] = createSignal(false);
+  const params = useParams();
   let container;
   let editor;
   let timeoutId;
 
-  async function loadUtilityModel() {
-    const res = await fetch("/dmn/list-types.dmn");
-    if (!res.ok) console.log("Failed to load utility.dmn");
-    return await res.text();
+  const trimDmn = (xml) => {
+    let dmn = "";
+    const firstChar = xml.charAt(0);
+    const lastChar = xml.charAt(xml.length - 1);
+    if (firstChar == '"' && lastChar == '"') dmn = xml.slice(1, -1);
+    else dmn = xml;
+    return dmn;
+  };
+
+  function buildDmnResources() {
+    console.log(projectDependencies());
+    return new Map(
+      projectDependencies().map((dep) => [
+        `${dep.groupId}:${dep.artifactId}:${dep.version}.dmn`,
+        {
+          contentType: "text",
+          content: Promise.resolve(trimDmn(dep.xml)),
+        },
+      ])
+    );
+  }
+
+  async function loadDependencies() {
+    const dependencies = new Map([
+      "utility.dmn",
+      {
+        contentType: "text",
+        content: Promise.resolve(projectDependencies()[0].xml),
+      },
+    ]);
+
+    return dependencies;
   }
 
   async function loadScreenerModel() {
-    let initialDmn = getDmnModelFromStorage();
-    if (!initialDmn) initialDmn = "";
+    let initialDmn = "";
+    let xml = dmnModel();
+    if (!xml) return initialDmn;
     else {
-      const firstChar = initialDmn.charAt(0);
-      const lastChar = initialDmn.charAt(initialDmn.length - 1);
-      if (firstChar == '"' && lastChar == '"')
-        initialDmn = initialDmn.slice(1, -1);
+      const firstChar = xml.charAt(0);
+      const lastChar = xml.charAt(xml.length - 1);
+      if (firstChar == '"' && lastChar == '"') initialDmn = xml.slice(1, -1);
+      else initialDmn = xml;
     }
+
     return initialDmn;
   }
 
   const initializeEditor = async () => {
-    const [utilityDmn, initialDmn] = await Promise.all([
-      loadUtilityModel(),
-      loadScreenerModel(),
-    ]);
-
-    // const [initialDmn] = await Promise.all([loadScreenerModel()]);
+    const initialDmn = loadScreenerModel();
 
     editor = DmnEditor.open({
       container: container,
       initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "screener.dmn",
       initialContent: Promise.resolve(initialDmn),
-      resources: new Map([
-        [
-          "list-types.dmn",
-          { contentType: "text", content: Promise.resolve(utilityDmn) },
-        ],
-      ]),
+      resources: buildDmnResources(),
       readOnly: false,
     });
 
@@ -72,13 +92,11 @@ export default function KogitoDmnEditorView() {
   });
 
   const handleSave = async () => {
-    const selectedProject = getSelectedProjectFromStorage();
-    const screenerId = selectedProject.id;
     const xml = await editor.getContent();
     setIsUnsaved(false);
     setIsSaving(true);
-    saveDmnModelToStorageDebounced(xml);
-    saveDmnModel(screenerId, xml);
+    saveDmnModel(params.projectId, xml);
+    setDmnModel(xml);
     setIsSaving(false);
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => setIsSaving(false), 500);

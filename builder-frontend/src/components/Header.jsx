@@ -1,12 +1,15 @@
 import { useAuth } from "../context/AuthContext";
-import { clearSessionStorage } from "../storageUtils/storageUtils";
+import { useNavigate } from "@solidjs/router";
 
-export default function Header({ returnToProjectsList, clearUserState }) {
+export default function Header() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+
   const handleLogout = () => {
-    clearUserState();
     logout();
+    navigate("/login", { replace: true });
   };
+
   return (
     <header class="bg-gray-200  px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-6">
@@ -16,7 +19,7 @@ export default function Header({ returnToProjectsList, clearUserState }) {
       </div>
       <div className="flex gap-4">
         <span
-          onClick={returnToProjectsList}
+          onClick={() => navigate("/")}
           class="font-bold text-sm text-gray-500 hover:underline"
         >
           ← Back to Projects
