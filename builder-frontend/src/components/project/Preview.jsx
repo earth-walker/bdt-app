@@ -1,17 +1,13 @@
-import { createSignal, createResource, ErrorBoundary } from "solid-js";
-import {
-  getFormSchemaFromStorage,
-  getSelectedProjectFromStorage,
-} from "../../storageUtils/storageUtils";
+import { createSignal } from "solid-js";
+import { useParams } from "@solidjs/router";
 import { submitForm } from "../../api/screener";
 import FormRenderer from "./FormRenderer";
 import Results from "./Results";
 
-export default function Preview({ screenerName }) {
-  //   const [data] = createResource(() => fetchScreenerData(screenerName));
+export default function Preview({ formSchema }) {
   const [results, setResults] = createSignal();
-  let selectedProject = getSelectedProjectFromStorage();
-  let schema = getFormSchemaFromStorage();
+  const params = useParams();
+  let schema = formSchema();
   if (!schema) {
     schema = {
       components: [],
@@ -23,7 +19,7 @@ export default function Preview({ screenerName }) {
   }
 
   const handleSubmitForm = async (data) => {
-    let results = await submitForm(selectedProject.id, data);
+    let results = await submitForm(params.projectId, data);
     setResults(results);
   };
 
