@@ -90,6 +90,18 @@ public class DmnDependencyService {
         }
     }
 
+    public Response getScreenerDependencies(String screenerId, String userId){
+        if (!isIdValid(screenerId)){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if (!isUserAuthorizedToAccessScreener(userId, screenerId)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        return Response.status(Response.Status.OK).build();
+    }
+
     private boolean isUserAuthorizedToAccessScreener(String userId, String screenerId) {
         Optional<Screener> screenerOptional = screenerRepository.getScreenerMetaDataOnly(screenerId);
         if (screenerOptional.isEmpty()){
@@ -102,4 +114,13 @@ public class DmnDependencyService {
         }
         return false;
     }
+
+    // validate Ids coming from URL to avoid injection attacks
+    public boolean isIdValid(String id){
+        if (!id.matches("^[a-zA-Z0-9_-]{5,64}$")) {
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -310,7 +310,7 @@ public class ScreenerResource {
         return false;
     }
 
-    // This Endpoint allows users to import a public DMN model into their project.
+    // This Endpoint allows users to add a public DMN model into their project as a dependency.
     // This makes the dmn model elements available in the dmn editor as well as includes the dmn model when the dmn is
     // compiled
     @POST
@@ -321,10 +321,8 @@ public class ScreenerResource {
         return dmnDependencyService.addDependency(request, userId);
     }
 
-
-    // This Endpoint allows users to import a public DMN model into their project.
-    // This makes the dmn model elements available in the dmn editor as well as includes the dmn model when the dmn is
-    // compiled
+    // This Endpoint allows users to delete dmn dependencies from their project. The DMN model elements will no longer
+    // be available in the DMN editor.
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/dependency")
