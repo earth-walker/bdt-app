@@ -3,39 +3,19 @@ import GoogleLoginButton from "./GoogleLoginButton";
 import { useAuth } from "../../context/AuthContext";
 import Login from "./Login";
 import Signup from "./Signup";
-
-const firebaseErrorMessages = {
-  "auth/user-not-found": "No user found with this email.",
-  "auth/wrong-password": "Incorrect password.",
-  "auth/invalid-email": "Please enter a valid email address.",
-  "auth/missing-password": "Please enter your password.",
-  "auth/user-disabled": "This user account has been disabled.",
-  "auth/too-many-requests": "Too many failed attempts. Please try again later.",
-  "auth/weak-password": "Password must be at least 6 characters.",
-  // "auth/invalid-credential": "Click sign Up to create a new account"
-  // Add more as needed
-};
-
-function getFriendlyErrorMessage(firebaseError) {
-  return (
-    firebaseErrorMessages[firebaseError.code] ||
-    "Login failed. Please try again."
-  );
-}
+import { useLocation, useNavigate } from "@solidjs/router";
 
 export default function AuthForm() {
-  const [email, setEmail] = createSignal("");
-  const [password, setPassword] = createSignal("");
-  const [error, setError] = createSignal("");
-  const [mode, setMode] = createSignal("signin");
   const [isSigningIn, setIsSigningIn] = createSignal(false);
   const { loginWithGoogle } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleMode = () => {
-    if (mode() === "signin") {
-      setMode("signup");
+    if (location.pathname === "/login") {
+      navigate("/signup");
     } else {
-      setMode("signin");
+      navigate("/login");
     }
   };
 
@@ -44,6 +24,7 @@ export default function AuthForm() {
       setIsSigningIn(true);
       await loginWithGoogle();
       setIsSigningIn(false);
+      navigate("/");
     } catch (err) {
       setIsSigningIn(false);
 
@@ -57,7 +38,7 @@ export default function AuthForm() {
         <div className="text-gray-800 text-xl font-semibold sm:text-2xl">
           Benefits Decision Tookit
         </div>
-        {mode() === "signin" ? (
+        {location.pathname === "/login" ? (
           <Login toggleMode={toggleMode}></Login>
         ) : (
           <Signup toggleMode={toggleMode}></Signup>

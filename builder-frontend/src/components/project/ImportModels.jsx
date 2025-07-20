@@ -27,16 +27,11 @@ export default function ImportModels({
   });
 
   const handleImportModel = async (model) => {
-    console.log("test");
-    console.log(model);
-
     await addDependency(screener().id, model);
     await fetchAndCacheProject(screener().id);
   };
 
   const models = createMemo(() => {
-    console.log("select models list memo called");
-    console.log(showInstalled());
     return showInstalled() ? installedModels() : availableModels();
   });
 
