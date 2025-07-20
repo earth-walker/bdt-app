@@ -41,7 +41,6 @@ export default function KogitoDmnEditorView() {
 
     // const [initialDmn] = await Promise.all([loadScreenerModel()]);
 
-    console.log(initialDmn);
     editor = DmnEditor.open({
       container: container,
       initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "screener.dmn",
