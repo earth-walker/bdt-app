@@ -9,8 +9,11 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.auth.AuthUtils;
+import org.acme.mapper.DmnModelMapper;
 import org.acme.model.domain.DmnModel;
+import org.acme.model.dto.DmnModelSummary;
 import org.acme.persistence.DmnModelRepository;
+import org.drools.base.beliefsystem.Mode;
 
 import java.util.List;
 
@@ -29,7 +32,10 @@ public class DmnModelResource {
         }
         Log.info("Get dmn models list");
         List<DmnModel> dmnModels = dmnModelRepository.getAllDmnModels();
+        List<DmnModelSummary> modelSummaries = dmnModels.stream()
+                .map(model -> DmnModelMapper.summaryFromDmnModel(model))
+                .toList();
 
-        return Response.ok(dmnModels, MediaType.APPLICATION_JSON).build();
+        return Response.ok(modelSummaries, MediaType.APPLICATION_JSON).build();
     }
 }
