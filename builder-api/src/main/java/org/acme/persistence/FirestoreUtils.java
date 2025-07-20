@@ -9,10 +9,7 @@ import com.google.firebase.cloud.StorageClient;
 import io.quarkus.logging.Log;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class FirestoreUtils {
@@ -143,8 +140,29 @@ public class FirestoreUtils {
             WriteResult result = db.collection(collectionName).document(docId).delete().get();
             Log.info("Document " + docId + " deleted at " + result.getUpdateTime());
         } catch (Exception e){
-            throw new Exception("Failed to delete document from firestore");
+            Log.error("Failed to delete document from firestore");
+            throw new Exception(e);
         }
 
+    }
+
+    public static void addObjectToListFieldOfDocument(String collection, String docId, String field, Object object) throws Exception{
+        try{
+            DocumentReference docRef = db.collection(collection).document(docId);
+            docRef.update(field, FieldValue.arrayUnion(object));
+        } catch (Exception e){
+            Log.error("Failed to add object to list field of collection.");
+            throw new Exception(e);
+        }
+    }
+
+    public static void removeObjectFromListFieldOfDocument(String collection, String docId, String field, Object object) throws Exception {
+        try {
+            DocumentReference docRef = db.collection(collection).document(docId);
+            docRef.update(field, FieldValue.arrayRemove(object));
+        } catch (Exception e) {
+            Log.error("Failed to remove object from list field of collection.");
+            throw new Exception(e);
+        }
     }
 }

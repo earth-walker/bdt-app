@@ -16,7 +16,7 @@ import org.acme.model.dto.SaveSchemaRequest;
 import org.acme.model.domain.Screener;
 import org.acme.persistence.ScreenerRepository;
 import org.acme.persistence.StorageService;
-import org.acme.service.DmnImportService;
+import org.acme.service.DmnDependencyService;
 import org.acme.service.DmnParser;
 import org.acme.service.DmnService;
 
@@ -39,7 +39,7 @@ public class ScreenerResource {
     DmnService dmnService;
 
     @Inject
-    DmnImportService dmnImportService;
+    DmnDependencyService dmnDependencyService;
 
     @GET
     @Path("/screeners")
@@ -315,9 +315,21 @@ public class ScreenerResource {
     // compiled
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/import-dmn")
-    public Response importDmn(@Context ContainerRequestContext requestContext, DmnImportRequest request){
+    @Path("/dependency")
+    public Response addDependency(@Context ContainerRequestContext requestContext, DmnImportRequest request){
         String userId = AuthUtils.getUserId(requestContext);
-        return dmnImportService.addImport(request, userId);
+        return dmnDependencyService.addDependency(request, userId);
+    }
+
+
+    // This Endpoint allows users to import a public DMN model into their project.
+    // This makes the dmn model elements available in the dmn editor as well as includes the dmn model when the dmn is
+    // compiled
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/dependency")
+    public Response deleteDependency(@Context ContainerRequestContext requestContext, DmnImportRequest request){
+        String userId = AuthUtils.getUserId(requestContext);
+        return dmnDependencyService.deleteDependency(request, userId);
     }
 }
