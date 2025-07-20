@@ -16,9 +16,9 @@ import org.acme.model.dto.SaveSchemaRequest;
 import org.acme.model.domain.Screener;
 import org.acme.persistence.ScreenerRepository;
 import org.acme.persistence.StorageService;
-import org.acme.service.DmnDependencyService;
+import org.acme.service.DependencyService;
 import org.acme.service.DmnParser;
-import org.acme.service.DmnService;
+import org.acme.service.DmnEvaluationService;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -36,10 +36,10 @@ public class ScreenerResource {
     StorageService storageService;
     
     @Inject
-    DmnService dmnService;
+    DmnEvaluationService dmnEvaluationService;
 
     @Inject
-    DmnDependencyService dmnDependencyService;
+    DependencyService dependencyService;
 
     @GET
     @Path("/screeners")
@@ -214,7 +214,7 @@ public class ScreenerResource {
             Log.info("Updated Screener " + screenerId + " to published.");
 
             //update published dmn model
-            String dmnXml = dmnService.compilePublishedDmnModel(screenerId);
+            String dmnXml = dmnEvaluationService.compilePublishedDmnModel(screenerId);
 
             Screener updateScreener = new Screener();
             updateScreener.setId(screenerId);
@@ -318,7 +318,7 @@ public class ScreenerResource {
     @Path("/dependency")
     public Response addDependency(@Context ContainerRequestContext requestContext, DmnImportRequest request){
         String userId = AuthUtils.getUserId(requestContext);
-        return dmnDependencyService.addDependency(request, userId);
+        return dependencyService.addDependency(request, userId);
     }
 
     // This Endpoint allows users to delete dmn dependencies from their project. The DMN model elements will no longer
@@ -328,6 +328,6 @@ public class ScreenerResource {
     @Path("/dependency")
     public Response deleteDependency(@Context ContainerRequestContext requestContext, DmnImportRequest request){
         String userId = AuthUtils.getUserId(requestContext);
-        return dmnDependencyService.deleteDependency(request, userId);
+        return dependencyService.deleteDependency(request, userId);
     }
 }

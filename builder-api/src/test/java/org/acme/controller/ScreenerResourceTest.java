@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.acme.service.DmnDependencyService;
+import org.acme.service.DependencyService;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Optional;
@@ -24,7 +24,7 @@ public class ScreenerResourceTest {
     ScreenerRepository screenerRepository;
 
     @InjectMocks
-    DmnDependencyService importService = new DmnDependencyService();
+    DependencyService importService = new DependencyService();
 
     private final String TEST_USER_ID = "TEST_USER_ID";
     private final String TEST_SCREENER_ID = "TEST_SCREENER_ID";

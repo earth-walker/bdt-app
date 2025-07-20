@@ -1,9 +1,13 @@
 package org.acme.mapper;
 
+import com.github.javaparser.utils.Log;
 import org.acme.constants.FieldNames;
 import org.acme.model.domain.Screener;
+import org.acme.model.dto.Dependency;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ScreenerMapper {
@@ -43,6 +47,10 @@ public class ScreenerMapper {
         }
         if (doesAttributeExistOfType(map, FieldNames.LAST_DMN_COMPILE, String.class)){
             screener.setLastDmnCompile((String) map.get(FieldNames.LAST_DMN_COMPILE));
+        }
+        if (doesAttributeExistOfType(map, FieldNames.DEPENDENCIES, List.class)) {
+            List<Object> rawDependencies = (List<Object>) map.get(FieldNames.DEPENDENCIES);
+            screener.setDependencies(mapDependencyFromMap(rawDependencies));
         }
 
         return screener;
@@ -85,6 +93,30 @@ public class ScreenerMapper {
         }
 
         return data;
+    }
+
+    private static List<Dependency> mapDependencyFromMap(List<Object> dependenciesRaw){
+        List<Dependency> dependencies = new ArrayList<>();
+
+        for (Object rawItem : dependenciesRaw) {
+            if (rawItem instanceof Map) {
+                Map<String, Object> dependencyMap = (Map<String, Object>) rawItem;
+                Dependency dependency = new Dependency();
+
+                if (dependencyMap.get(FieldNames.GROUP_ID) instanceof String) {
+                    dependency.groupId = (String) dependencyMap.get(FieldNames.GROUP_ID);
+                }
+                if (dependencyMap.get(FieldNames.ARTIFACT_ID) instanceof String) {
+                    dependency.artifactId = (String) dependencyMap.get(FieldNames.ARTIFACT_ID);
+                }
+                if (dependencyMap.get(FieldNames.VERSION) instanceof String) {
+                    dependency.version = (String) dependencyMap.get(FieldNames.VERSION);
+                }
+                dependencies.add(dependency);
+            }
+        }
+
+        return dependencies;
     }
 
     private static boolean doesAttributeExistOfType(Map<String, Object> map, String attributeName, Class<?> expectedType) {
