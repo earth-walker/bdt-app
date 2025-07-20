@@ -32,15 +32,19 @@ function App() {
         clearSessionStorage();
       } else {
         setIsLoading(true);
-        const screenerData = await fetchProject(screener.id);
-        saveScreenerDataToStorage(screenerData);
-        setSelectedProject(screenerData);
+        await fetchAndCacheProject(screener.id);
         setIsLoading(false);
       }
     } catch (e) {
       console.log("Error fetching screener data", e);
       setIsLoading(false);
     }
+  };
+
+  const fetchAndCacheProject = async (screenerId) => {
+    const screenerData = await fetchProject(screenerId);
+    saveScreenerDataToStorage(screenerData);
+    setSelectedProject(screenerData);
   };
 
   const clearUserState = () => {
@@ -76,6 +80,7 @@ function App() {
           selectedProject={selectedProject}
           setSelectedProject={handleSelectProject}
           clearUserState={clearUserState}
+          fetchAndCacheProject={fetchAndCacheProject}
         ></Project>
       );
     }
