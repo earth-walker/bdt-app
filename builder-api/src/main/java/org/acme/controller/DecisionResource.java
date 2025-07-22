@@ -42,44 +42,37 @@ public class DecisionResource {
                     .build();
         }
 
+        return getScreenerResults(screenerId, inputData);
+    }
+
+    private Response getScreenerResults(String screenerId, Map<String, Object> inputData) {
         Optional<Screener> screenerOptional = screenerRepository.getScreener(screenerId);
 
-        String notFoundResponseMessage = String.format("Form %s was not found", screenerId);
         if (screenerOptional.isEmpty()){
-            throw new NotFoundException(notFoundResponseMessage);
+            throw new NotFoundException(String.format("Form %s was not found", screenerId));
         }
 
         Screener screener = screenerOptional.get();
 
-        Map<String, Object> result;
-
         try {
-        if (screener.getLastDmnCompile() == null || Instant.parse(screener.getLastDmnSave()).isAfter(Instant.parse(screener.getLastDmnCompile()))){
-            //compile working dmn
-            String dmnXml = dmnEvaluationService.compileWorkingDmnModel(screenerId);
-            updateScreenerLastCompileTime(screenerId, dmnXml);
-        }
+            if (isLastScreenerCompileOutOfDate(screener)){
+                dmnEvaluationService.compileWorkingDmnModel(screener);
+                updateScreenerLastCompileTime(screenerId, screener.getDmnModel());
+            }
 
-        String filePath = storageService.getScreenerWorkingDmnModelPath(screenerId);
-        Optional<InputStream> dmnDataOpt = storageService.getFileInputStreamFromStorage(filePath);
+            Map <String, Object> result = dmnEvaluationService.evaluateDecision(screener, inputData);
 
-        if (dmnDataOpt.isEmpty()){
-            throw new NotFoundException();
-        }
+            if (result.isEmpty()) return Response.ok().entity(Collections.emptyList()).build();
 
-        result = dmnEvaluationService.evaluateDecision(screener, inputData);
+            return Response.ok().entity(result).build();
 
         } catch (Exception e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+    }
 
-        if (!result.isEmpty()){
-            return Response.ok().entity(result).build();
-        }
-
-        else {
-            return Response.ok().entity(Collections.emptyList()).build();
-        }
+    private static boolean isLastScreenerCompileOutOfDate(Screener screener) {
+        return screener.getLastDmnCompile() == null || Instant.parse(screener.getLastDmnSave()).isAfter(Instant.parse(screener.getLastDmnCompile()));
     }
 
     private void updateScreenerLastCompileTime(String screenerId, String dmnXml) throws Exception {
