@@ -63,7 +63,7 @@ public class ModelLibraryService {
 
     // validate Ids coming from URL to avoid injection attacks
     public boolean isIdValid(String id){
-        if (!id.matches("^[a-zA-Z0-9_.-]{5,64}$")) {
+        if (!id.matches("^[a-zA-Z0-9_.-]{3,64}$")) {
             return false;
         }
         return true;
