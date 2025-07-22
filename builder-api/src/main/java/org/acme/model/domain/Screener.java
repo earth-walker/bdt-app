@@ -1,4 +1,7 @@
-package org.acme.model;
+package org.acme.model.domain;
+import org.acme.model.dto.Dependency;
+
+import java.util.List;
 import java.util.Map;
 
 public class Screener {
@@ -16,6 +19,7 @@ public class Screener {
     private String workingDmnName;
     private String lastDmnSave;
     private String lastDmnCompile;
+    private List<Dependency> dependencies;
 
     public Screener(Map<String, Object> model, boolean isPublished){
         this.formSchema = model;
@@ -139,5 +143,13 @@ public class Screener {
 
     public void setWorkingDmnName(String workingDmnName) {
         this.workingDmnName = workingDmnName;
+    }
+
+    public List<Dependency> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(List<Dependency> dependencies) {
+        this.dependencies = dependencies;
     }
 }

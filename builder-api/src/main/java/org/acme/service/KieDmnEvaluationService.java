@@ -4,7 +4,11 @@ import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
-import org.acme.model.Screener;
+import org.acme.model.domain.DmnModel;
+import org.acme.model.domain.Screener;
+import org.acme.model.dto.Dependency;
+import org.acme.persistence.DmnModelRepository;
+import org.acme.persistence.ScreenerRepository;
 import org.acme.persistence.StorageService;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
@@ -18,16 +22,21 @@ import java.util.stream.Collectors;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 
 @ApplicationScoped
-public class KieDmnService implements DmnService {
+public class KieDmnEvaluationService implements DmnEvaluationService {
 
     @Inject
     private StorageService storageService;
+
+    @Inject
+    private DmnModelRepository dmnModelRepository;
+
+    @Inject
+    private ScreenerRepository screenerRepository;
 
     public Map<String, Object> evaluateDecision(Screener screener, Map<String, Object> inputs) throws IOException {
 
         String filePath = storageService.getWorkingCompiledDmnModelPath(screener.getId());
         Optional<byte[]> dmnDataOpt = storageService.getFileBytesFromStorage(filePath);
-
 
         if (dmnDataOpt.isEmpty()){
             throw new NotFoundException();
@@ -91,32 +100,72 @@ public class KieDmnService implements DmnService {
     }
 
     public String compilePublishedDmnModel(String screenerId) throws Exception {
-        Optional<String> optDmnXml = getWorkingDmnXml(screenerId);
-        if (optDmnXml.isEmpty()) {
+        Optional<String> dmnXmlOpt = getWorkingDmnXml(screenerId);
+        if (dmnXmlOpt.isEmpty()) {
             throw new Exception("Working Dmn not found for screener: " + screenerId);
         }
-        String dmnXml = optDmnXml.get();
-        byte[] serializedModel = compileDmnModel(dmnXml, new HashMap<>(), screenerId);
+        Optional<Screener> screenerOpt = screenerRepository.getScreenerMetaDataOnly(screenerId);
+        if (screenerOpt.isEmpty()) {
+            throw new Exception("Screener not found for screener: " + screenerId);
+        }
+
+        String dmnXml = dmnXmlOpt.get();
+        Screener screener = screenerOpt.get();
+
+        // Get Screener DMN Dependencies
+        Map<String, String> dependencies = new HashMap<>();
+        for (Dependency dep : screener.getDependencies()){
+            String key = dep.groupId + ":" + dep.artifactId + ":" + dep.version;
+            String xml = getDependencyXml(dep, key);
+            dependencies.put(key, xml);
+        }
+
+        byte[] serializedModel = compileDmnModel(dmnXml, dependencies, screenerId);
         String filPath = storageService.getPublishedCompiledDmnModelPath(screenerId);
         storageService.writeBytesToStorage(filPath, serializedModel, "application/java-archive");
         Log.info("Saved compiled published dmn for model " + screenerId + " to storage.");
         return dmnXml;
     }
 
-    public String compileWorkingDmnModel(String screenerId) throws Exception {
-        Optional<String> optDmnXml = getWorkingDmnXml(screenerId);
-        if (optDmnXml.isEmpty()) {
-            throw new Exception("Working Dmn not found for screener: " + screenerId);
+    public void compileWorkingDmnModel(Screener screener) throws Exception {
+        String dmnXml = screener.getDmnModel();
+        if (dmnXml == null) {
+            throw new Exception("Working Dmn not found for screener: " + screener.getId());
         }
-        String dmnXml = optDmnXml.get();
-        byte[] serializedModel = compileDmnModel(dmnXml, new HashMap<>(), screenerId);
-        String filPath = storageService.getWorkingCompiledDmnModelPath(screenerId);
+
+        // Get Screener DMN Dependencies
+        Map<String, String> dependencies = new HashMap<>();
+        for (Dependency dep : screener.getDependencies()){
+            String key = dep.groupId + ":" + dep.artifactId + ":" + dep.version;
+            String xml = getDependencyXml(dep, key);
+            dependencies.put(key, xml);
+        }
+
+        byte[] serializedModel = compileDmnModel(dmnXml, dependencies, screener.getId());
+        String filPath = storageService.getWorkingCompiledDmnModelPath(screener.getId());
         storageService.writeBytesToStorage(filPath, serializedModel, "application/java-archive");
-        Log.info("Saved compiled working dmn for model " + screenerId + " to storage.");
-        return dmnXml;
+        Log.info("Saved compiled working dmn for model " + screener.getId() + " to storage.");
     }
 
-    private byte[] compileDmnModel(String dmnXml, Map<String, String> importedModels, String modelId) throws IOException {
+    private String getDependencyXml(Dependency dep, String key) throws Exception {
+        Optional<DmnModel> model = dmnModelRepository.getDmnModel(dep.groupId, dep.artifactId, dep.version);
+
+        if (model.isEmpty()){
+            Log.error("Dmn model not fount: " + key);
+            throw new Exception("Working Dmn not found for screener");
+        }
+        Optional<String> xmlOpt = storageService.getStringFromStorage(model.get().getStorageLocation());
+
+        if (xmlOpt.isEmpty()){
+            Log.error("Dmn xml not fount: " + key);
+            throw new Exception("Working Dmn xml not found for screener");
+        }
+
+        return xmlOpt.get();
+    }
+
+
+    private byte[] compileDmnModel(String dmnXml, Map<String, String> dependenciesMap, String modelId) throws IOException {
         Log.info("Compiling and saving DMN model: " + modelId);
 
         KieServices kieServices = KieServices.Factory.get();
@@ -138,11 +187,11 @@ public class KieDmnService implements DmnService {
         kfs.write("src/main/resources/META-INF/kmodule.xml", kmoduleXml);
 
         // Write all imported DMN models
-        for (Map.Entry<String, String> entry : importedModels.entrySet()) {
+        for (Map.Entry<String, String> entry : dependenciesMap.entrySet()) {
             // Ensure the path starts with "src/main/resources/" to be picked up by KieBuilder
             String resourcePath = entry.getKey();
             if (!resourcePath.startsWith("src/main/resources/")) {
-                resourcePath = "src/main/resources/" + resourcePath;
+                resourcePath = "src/main/resources/" + resourcePath + ".dmn";
             }
             kfs.write(resourcePath, entry.getValue());
             Log.info("Added imported DMN model to KieFileSystem: " + resourcePath);

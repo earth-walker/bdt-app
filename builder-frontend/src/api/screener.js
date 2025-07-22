@@ -1,25 +1,5 @@
-import { getAuth } from "firebase/auth";
+import { authFetch } from "./auth";
 const apiUrl = import.meta.env.VITE_API_URL;
-
-async function authFetch(input, init = {}) {
-  const auth = getAuth();
-  const user = auth.currentUser;
-
-  // If no user is logged in, you can handle it accordingly
-  if (!user) {
-    throw new Error("User not authenticated");
-  }
-
-  const token = await user.getIdToken();
-
-  const headers = new Headers(init.headers || {});
-  headers.set("Authorization", `Bearer ${token}`);
-
-  return fetch(input, {
-    ...init,
-    headers,
-  });
-}
 
 export const fetchProjects = async () => {
   const url = apiUrl + "/screeners";
@@ -152,6 +132,7 @@ export const saveFormSchema = async (screenerId, schema) => {
 };
 
 export const saveDmnModel = async (screenerId, dmnModel) => {
+  console.log(dmnModel);
   const requestData = {};
   requestData.screenerId = screenerId;
   requestData.dmnModel = dmnModel;
@@ -220,6 +201,33 @@ export const publishScreener = async (screenerId) => {
     return data;
   } catch (error) {
     console.error("Error submitting form:", error);
-    throw error; // rethrow so you can handle it in your component if needed
+    throw error;
+  }
+};
+
+export const addDependency = async (screenerId, dependency) => {
+  const url = apiUrl + "/dependency";
+  console.log({ screenerId });
+  try {
+    const response = await authFetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        screenerId: screenerId,
+        groupId: dependency.groupId,
+        artifactId: dependency.artifactId,
+        version: dependency.version,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Model import failed with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error adding dependency:", error);
+    throw error;
   }
 };

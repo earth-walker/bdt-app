@@ -1,38 +1,32 @@
 import { createSignal, onMount } from "solid-js";
-import {
-  getSelectedProjectFromStorage,
-  saveScreenerDataToStorage,
-} from "../../storageUtils/storageUtils";
-import { publishScreener, fetchProject } from "../../api/api";
+import { useParams } from "@solidjs/router";
+import { publishScreener, fetchProject } from "../../api/screener";
 const screenerBaseUrl = import.meta.env.VITE_SCREENER_BASE_URL;
-export default function Publish() {
+export default function Publish({ project }) {
   const [isLoading, setIsLoading] = createSignal(false);
   const [screenerName, setScreenerName] = createSignal();
   const [isPublished, setIsPublished] = createSignal();
   const [lastPublishDate, setLastPublishDate] = createSignal();
   const [screenerUrl, setScreenerUrl] = createSignal();
-  let screenerId;
+  const { projectId } = useParams();
 
   onMount(() => {
     setScreenerState();
   });
 
   const setScreenerState = () => {
-    const { id, screenerName, published, lastPublishDate } =
-      getSelectedProjectFromStorage();
-    setScreenerName(screenerName);
-    setIsPublished(published);
-    setLastPublishDate(lastPublishDate);
-    setScreenerUrl(screenerBaseUrl + "screener/" + id);
-    screenerId = id;
+    if (!project()) return;
+    setScreenerName(project().name);
+    setIsPublished(project().published);
+    setLastPublishDate(project().lastPublishDate);
+    setScreenerUrl(screenerBaseUrl + "screener/" + project().id);
   };
 
   const handlePublish = async () => {
     try {
       setIsLoading(true);
-      await publishScreener(screenerId);
-      const screenerData = await fetchProject(screenerId);
-      saveScreenerDataToStorage(screenerData);
+      await publishScreener(projectId);
+      const screenerData = await fetchProject(projectId);
       setScreenerState();
       setIsLoading(false);
     } catch (e) {

@@ -1,5 +1,6 @@
 import { createSignal } from "solid-js";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "@solidjs/router";
 
 const firebaseErrorMessages = {
   "auth/user-not-found": "No user found with this email.",
@@ -29,6 +30,7 @@ export default function Signup({ toggleMode }) {
   const [error, setError] = createSignal("");
   const [isSigningIn, setIsSigningIn] = createSignal(false);
   const { loginWithGoogle, register } = useAuth();
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -40,6 +42,7 @@ export default function Signup({ toggleMode }) {
       await register(email(), password());
       setIsSigningIn(false);
       setError(null);
+      navigate("/", { replace: true });
     } catch (err) {
       setError(getFriendlyErrorMessage(err));
       setIsSigningIn(false);
@@ -57,9 +60,6 @@ export default function Signup({ toggleMode }) {
 
   return (
     <form className="flex flex-col">
-      <div className="text-gray-800 text-xl font-semibold sm:text-2xl">
-        Benefits Decision Tookit
-      </div>
       <div className="pt-4 flex flex-col">
         <label className="text-sm text-gray-500 font-semibold" for="email">
           Email

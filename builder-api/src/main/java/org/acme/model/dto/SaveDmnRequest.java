@@ -1,4 +1,4 @@
-package org.acme.dto;
+package org.acme.model.dto;
 
 public class SaveDmnRequest {
     public String screenerId;

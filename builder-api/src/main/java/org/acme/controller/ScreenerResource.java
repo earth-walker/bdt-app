@@ -9,14 +9,16 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.auth.AuthUtils;
-import org.acme.dto.PublishScreenerRequest;
-import org.acme.dto.SaveDmnRequest;
-import org.acme.dto.SaveSchemaRequest;
-import org.acme.model.Screener;
+import org.acme.model.dto.DmnImportRequest;
+import org.acme.model.dto.PublishScreenerRequest;
+import org.acme.model.dto.SaveDmnRequest;
+import org.acme.model.dto.SaveSchemaRequest;
+import org.acme.model.domain.Screener;
 import org.acme.persistence.ScreenerRepository;
 import org.acme.persistence.StorageService;
+import org.acme.service.ScreenerDependencyService;
 import org.acme.service.DmnParser;
-import org.acme.service.DmnService;
+import org.acme.service.DmnEvaluationService;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -34,7 +36,10 @@ public class ScreenerResource {
     StorageService storageService;
     
     @Inject
-    DmnService dmnService;
+    DmnEvaluationService dmnEvaluationService;
+
+    @Inject
+    ScreenerDependencyService screenerDependencyService;
 
     @GET
     @Path("/screeners")
@@ -209,7 +214,7 @@ public class ScreenerResource {
             Log.info("Updated Screener " + screenerId + " to published.");
 
             //update published dmn model
-            String dmnXml = dmnService.compilePublishedDmnModel(screenerId);
+            String dmnXml = dmnEvaluationService.compilePublishedDmnModel(screenerId);
 
             Screener updateScreener = new Screener();
             updateScreener.setId(screenerId);
@@ -303,5 +308,26 @@ public class ScreenerResource {
             return true;
         }
         return false;
+    }
+
+    // This Endpoint allows users to add a public DMN model into their project as a dependency.
+    // This makes the dmn model elements available in the dmn editor as well as includes the dmn model when the dmn is
+    // compiled
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/dependency")
+    public Response addDependency(@Context ContainerRequestContext requestContext, DmnImportRequest request){
+        String userId = AuthUtils.getUserId(requestContext);
+        return screenerDependencyService.addDependency(request, userId);
+    }
+
+    // This Endpoint allows users to delete dmn dependencies from their project. The DMN model elements will no longer
+    // be available in the DMN editor.
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/dependency")
+    public Response deleteDependency(@Context ContainerRequestContext requestContext, DmnImportRequest request){
+        String userId = AuthUtils.getUserId(requestContext);
+        return screenerDependencyService.deleteDependency(request, userId);
     }
 }

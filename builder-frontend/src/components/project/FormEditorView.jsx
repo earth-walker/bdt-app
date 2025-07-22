@@ -1,17 +1,15 @@
 import { onMount, onCleanup, createSignal } from "solid-js";
 import { FormEditor } from "@bpmn-io/form-js-editor";
-import { getSelectedProjectFromStorage } from "../../storageUtils/storageUtils";
-import { saveFormSchema } from "../../api/api";
-import {
-  saveFormSchemaToStorageDebounced,
-  getFormSchemaFromStorage,
-} from "../../storageUtils/storageUtils";
+import { saveFormSchema } from "../../api/screener";
+import { useParams } from "@solidjs/router";
 import "@bpmn-io/form-js/dist/assets/form-js.css";
 import "@bpmn-io/form-js-editor/dist/assets/form-js-editor.css";
 
-function FormEditorView() {
+function FormEditorView({ formSchema, setFormSchema }) {
   const [isUnsaved, setIsUnsaved] = createSignal(false);
   const [isSaving, setIsSaving] = createSignal(false);
+  const params = useParams();
+
   let timeoutId;
   let container;
   let formEditor;
@@ -26,10 +24,8 @@ function FormEditorView() {
   onMount(() => {
     formEditor = new FormEditor({ container });
 
-    let formSchema = getFormSchemaFromStorage();
-
-    if (formSchema) {
-      formEditor.importSchema(formSchema).catch((err) => {
+    if (formSchema()) {
+      formEditor.importSchema(formSchema()).catch((err) => {
         console.error("Failed to load schema", err);
       });
     } else {
@@ -40,7 +36,7 @@ function FormEditorView() {
 
     formEditor.on("changed", (e) => {
       setIsUnsaved(true);
-      saveFormSchemaToStorageDebounced(e.schema);
+      setFormSchema(e.schema);
     });
 
     onCleanup(() => {
@@ -53,12 +49,12 @@ function FormEditorView() {
   });
 
   const handleSave = async () => {
-    const selectedProject = getSelectedProjectFromStorage();
-    const screenerId = selectedProject.id;
-    const formSchema = await formEditor.getSchema();
+    console.log("save");
+    const projectId = params.projectId;
+    const schema = formSchema();
     setIsUnsaved(false);
     setIsSaving(true);
-    saveFormSchema(screenerId, formSchema);
+    saveFormSchema(projectId, schema);
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => setIsSaving(false), 500);
   };
