@@ -16,7 +16,7 @@ import org.acme.model.dto.SaveSchemaRequest;
 import org.acme.model.domain.Screener;
 import org.acme.persistence.ScreenerRepository;
 import org.acme.persistence.StorageService;
-import org.acme.service.DependencyService;
+import org.acme.service.ScreenerDependencyService;
 import org.acme.service.DmnParser;
 import org.acme.service.DmnEvaluationService;
 
@@ -39,7 +39,7 @@ public class ScreenerResource {
     DmnEvaluationService dmnEvaluationService;
 
     @Inject
-    DependencyService dependencyService;
+    ScreenerDependencyService screenerDependencyService;
 
     @GET
     @Path("/screeners")
@@ -318,7 +318,7 @@ public class ScreenerResource {
     @Path("/dependency")
     public Response addDependency(@Context ContainerRequestContext requestContext, DmnImportRequest request){
         String userId = AuthUtils.getUserId(requestContext);
-        return dependencyService.addDependency(request, userId);
+        return screenerDependencyService.addDependency(request, userId);
     }
 
     // This Endpoint allows users to delete dmn dependencies from their project. The DMN model elements will no longer
@@ -328,6 +328,6 @@ public class ScreenerResource {
     @Path("/dependency")
     public Response deleteDependency(@Context ContainerRequestContext requestContext, DmnImportRequest request){
         String userId = AuthUtils.getUserId(requestContext);
-        return dependencyService.deleteDependency(request, userId);
+        return screenerDependencyService.deleteDependency(request, userId);
     }
 }
