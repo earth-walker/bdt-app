@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @ApplicationScoped
-public class DependencyService {
+public class ScreenerDependencyService {
 
     @Inject
     ScreenerRepository screenerRepository;
