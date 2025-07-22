@@ -14,6 +14,7 @@ export default function ImportModels({
   const [showInstalled, setShowInstalled] = createSignal(false);
 
   const installedModels = createMemo(() => {
+    if (!dependencies) return [];
     const depKeys = new Set(
       dependencies.map(
         (dep) => `${dep.groupId}:${dep.artifactId}:${dep.version}`
