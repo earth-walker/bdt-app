@@ -5,8 +5,6 @@ import Results from "./Results";
 import { fetchScreenerData, getDecisionResult } from "./api/api";
 import Loading from "./Loading";
 import ErrorPage from "./Error";
-import Header from "./Header";
-import Footer from "./Footer";
 import testData from "./testData";
 
 export default function Screener() {
@@ -27,7 +25,6 @@ export default function Screener() {
 
   return (
     <>
-      <Header orgName={testData.branding.orgName} />
       <div class="mt-4">
         <ErrorBoundary
           fallback={(error, reset) => <ErrorPage error={error}></ErrorPage>}
@@ -46,7 +43,6 @@ export default function Screener() {
           )}
         </ErrorBoundary>
       </div>
-      <Footer authorInfo={testData.branding.authorInfo} />
     </>
   );
 }
